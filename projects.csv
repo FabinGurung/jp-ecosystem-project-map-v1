@@ -1,0 +1,8 @@
+﻿PK_ID,project_name,display_name,contractor,latitude,longitude,status,client_name,project_manager,site_engineer,physical_progress_percent,financial_progress_percent,start_date,target_completion_date,last_updated,latest_update,photo_url,details_url,public_notes,is_public
+P001,14_bishal_paija,14 Bishal Paija,Rohini Engineering and Builders Pvt Ltd,28.200667,84.018222,Construction,,,,,,,,2026-07-23,,,,,TRUE
+P002,17_samir_man_ghubaju,17 Samir Man Ghubaju,Fishtail Builders Pvt Ltd,28.196778,83.970778,Construction,,,,,,,,2026-07-23,,,,,TRUE
+P003,13_hari_baral,13 Hari Baral,Fishtail Builders Pvt Ltd,28.226111,84.051389,Construction,,,,,,,,2026-07-23,,,,,TRUE
+P004,16_yamuna_pun_adai,16 Yamuna Pun Adai,Fishtail Builders Pvt Ltd,28.2555,83.97975,Completed,,,,100,,,,2026-07-23,,,,,TRUE
+P005,30_sabitri_giri_dipti_giri,30 Sabitri Giri / Dipti Giri,Fishtail Builders Pvt Ltd,28.160278,84.0825,Construction,,,,,,,,2026-07-23,,,,,TRUE
+P006,31_sharada_adhikari,31 Sharada Adhikari,Fishtail Builders Pvt Ltd,28.1657989,84.115339,Construction,,,,,,,,2026-07-23,,,,,TRUE
+P007,15_narayani_parajuli,15 Narayani Parajuli,Fishtail Builders Pvt Ltd,28.1951253,83.9956481,Approval,,,,,,,,2026-07-23,,,,,TRUE

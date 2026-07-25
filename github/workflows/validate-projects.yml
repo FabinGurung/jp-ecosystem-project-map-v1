@@ -1,0 +1,112 @@
+name: Validate project data
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "projects.csv"
+      - "map-config.json"
+      - ".github/workflows/validate-projects.yml"
+  pull_request:
+    paths:
+      - "projects.csv"
+      - "map-config.json"
+      - ".github/workflows/validate-projects.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate CSV and configuration
+        shell: python
+        run: |
+          import csv
+          import json
+          from pathlib import Path
+
+          required = {
+              "PK_ID", "project_name", "display_name", "contractor",
+              "latitude", "longitude", "status", "client_name",
+              "project_manager", "site_engineer",
+              "physical_progress_percent", "financial_progress_percent",
+              "start_date", "target_completion_date", "last_updated",
+              "latest_update", "photo_url", "details_url",
+              "public_notes", "is_public",
+          }
+
+          config = json.loads(Path("map-config.json").read_text(encoding="utf-8"))
+          allowed_statuses = set(config["status_styles"])
+
+          with Path("projects.csv").open(newline="", encoding="utf-8-sig") as handle:
+              reader = csv.DictReader(handle)
+              rows = list(reader)
+              headers = set(reader.fieldnames or [])
+
+          missing_headers = sorted(required - headers)
+          if missing_headers:
+              raise SystemExit(f"Missing required columns: {missing_headers}")
+          if not rows:
+              raise SystemExit("projects.csv contains no project rows.")
+
+          seen_ids = set()
+          errors = []
+
+          for line_number, row in enumerate(rows, start=2):
+              project_id = (row.get("PK_ID") or "").strip()
+              if not project_id:
+                  errors.append(f"Line {line_number}: PK_ID is blank")
+              elif project_id in seen_ids:
+                  errors.append(f"Line {line_number}: duplicate PK_ID {project_id}")
+              else:
+                  seen_ids.add(project_id)
+
+              for field in ("project_name", "contractor", "status", "latitude", "longitude"):
+                  if not (row.get(field) or "").strip():
+                      errors.append(f"Line {line_number}: {field} is blank")
+
+              try:
+                  latitude = float(row["latitude"])
+                  if not -90 <= latitude <= 90:
+                      errors.append(f"Line {line_number}: latitude outside -90..90")
+              except ValueError:
+                  errors.append(f"Line {line_number}: latitude is not numeric")
+
+              try:
+                  longitude = float(row["longitude"])
+                  if not -180 <= longitude <= 180:
+                      errors.append(f"Line {line_number}: longitude outside -180..180")
+              except ValueError:
+                  errors.append(f"Line {line_number}: longitude is not numeric")
+
+              status = (row.get("status") or "").strip()
+              if status and status not in allowed_statuses:
+                  errors.append(
+                      f"Line {line_number}: unknown status {status!r}; "
+                      f"allowed values are {sorted(allowed_statuses)}"
+                  )
+
+              for field in ("physical_progress_percent", "financial_progress_percent"):
+                  value = (row.get(field) or "").strip()
+                  if value:
+                      try:
+                          number = float(value)
+                          if not 0 <= number <= 100:
+                              errors.append(f"Line {line_number}: {field} outside 0..100")
+                      except ValueError:
+                          errors.append(f"Line {line_number}: {field} is not numeric")
+
+              public_value = (row.get("is_public") or "").strip().lower()
+              if public_value not in {"true", "false", "1", "0", "yes", "no", "y", "n"}:
+                  errors.append(f"Line {line_number}: is_public must be TRUE or FALSE")
+
+          if errors:
+              print("\n".join(errors))
+              raise SystemExit(f"Validation failed with {len(errors)} error(s).")
+
+          print(f"Validation passed for {len(rows)} project row(s).")

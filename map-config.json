@@ -1,0 +1,59 @@
+{
+  "site_title": "JP Ecosystem Project Map",
+  "site_subtitle": "Coordinate-verified project locations in Pokhara, Nepal",
+  "public_notice": "Public project information only. Sensitive financial, client-contact, and internal site records should not be published here.",
+  "default_center": [
+    28.2096,
+    83.9856
+  ],
+  "default_zoom": 12,
+  "fit_bounds_padding": 48,
+  "maximum_zoom": 19,
+  "tile_url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  "tile_attribution": "&copy; OpenStreetMap contributors",
+  "status_styles": {
+    "Construction": {
+      "color": "#d73027",
+      "label": "Construction",
+      "order": 1
+    },
+    "Completed": {
+      "color": "#1a9850",
+      "label": "Completed",
+      "order": 2
+    },
+    "Approval": {
+      "color": "#4575b4",
+      "label": "Approval",
+      "order": 3
+    },
+    "Planned": {
+      "color": "#7b61a8",
+      "label": "Planned",
+      "order": 4
+    },
+    "On Hold": {
+      "color": "#f59e0b",
+      "label": "On Hold",
+      "order": 5
+    },
+    "Cancelled": {
+      "color": "#6b7280",
+      "label": "Cancelled",
+      "order": 6
+    }
+  },
+  "marker": {
+    "radius": 9,
+    "weight": 2,
+    "fill_opacity": 0.9,
+    "tooltip_direction": "top",
+    "tooltip_offset": [
+      0,
+      -8
+    ]
+  },
+  "show_coordinates": true,
+  "show_download_buttons": true,
+  "show_public_notice": true
+}
