@@ -2,6 +2,21 @@
 
 A public, coordinate-verified project map hosted with GitHub Pages.
 
+## Current stable version
+
+**v1.1.0 — Data-driven Stable Map**
+
+This is the first stable data-driven version of the JP Ecosystem Project Map.
+
+Project records are maintained separately from the application:
+
+- `projects.csv` — project data
+- `map-config.json` — map settings, statuses, and visual configuration
+- `index.html` — map application
+
+See [`CHANGELOG.md`](CHANGELOG.md) for version history.
+
+
 ## Live architecture
 
 ```text
