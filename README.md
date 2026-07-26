@@ -84,3 +84,5 @@ For larger changes:
 4. Confirm validation is green.
 5. Merge into `main`.
 6. GitHub Pages republishes automatically.
+
+GitHub Pages deployment initialized.
