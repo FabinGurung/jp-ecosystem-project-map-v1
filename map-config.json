@@ -1,4 +1,6 @@
 {
+  "app_version": "1.1.0",
+  "data_schema_version": "1.0.0",
   "site_title": "JP Ecosystem Project Map",
   "site_subtitle": "Coordinate-verified project locations in Pokhara, Nepal",
   "public_notice": "Public project information only. Sensitive financial, client-contact, and internal site records should not be published here.",
