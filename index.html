@@ -4,11 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="JP Ecosystem public project-location map">
+  <!-- v2: corrected Leaflet CSS SRI + mobile-first map sizing + ResizeObserver -->
   <title>JP Ecosystem Project Map</title>
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="preconnect" href="https://tile.openstreetmap.org">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIINfQ3ynh1YuXb1bQWqv1iFw5mL0xMXA3s="
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin="">
   <style>
     :root {
@@ -63,21 +64,52 @@
     .leaflet-tooltip{font-weight:700;border-radius:7px;padding:3px 6px}
     .empty-state{padding:28px 16px;text-align:center;color:var(--muted)}
     .mobile-list-toggle{display:none}
+    .mobile-filter-toggle{display:none}
+    .map-wrap{height:100%}
+    .leaflet-container{width:100%;height:100%}
     @media(max-width:860px){
-      .controls{grid-template-columns:1fr 1fr}
+      .header{padding:10px 12px}
+      .header-row{align-items:flex-start}
+      .subtitle{font-size:12px}
+      .metrics{gap:6px}
+      .metric{padding:5px 8px;font-size:12px}
+
+      .mobile-filter-toggle{display:inline-flex;margin-top:8px}
+      .controls{display:none;margin-top:8px;grid-template-columns:1fr 1fr}
+      .header.filters-open .controls{display:grid}
       .controls .search-control{grid-column:1/-1}
-      .workspace{grid-template-columns:1fr;grid-template-rows:minmax(360px,1fr) auto}
-      .map-wrap{grid-row:1}
-      .sidebar{grid-row:2;max-height:42vh;border-right:0;border-top:1px solid var(--line)}
+
+      .workspace{
+        grid-template-columns:1fr;
+        grid-template-rows:minmax(420px,62dvh) auto;
+      }
+      .map-wrap{
+        grid-row:1;
+        min-height:420px;
+        height:62dvh;
+      }
+      #map{
+        min-height:0;
+        height:100%;
+      }
+
+      .sidebar{
+        grid-row:2;
+        max-height:34dvh;
+        border-right:0;
+        border-top:1px solid var(--line);
+      }
       .mobile-list-toggle{display:inline-flex}
       .sidebar.collapsed{max-height:0;overflow:hidden;border-top:0}
     }
+
     @media(max-width:520px){
       .controls{grid-template-columns:1fr}
       .controls .search-control{grid-column:auto}
-      .header{padding-bottom:10px}
-      .metric{font-size:12px}
-      #map{min-height:360px}
+      .header{padding-bottom:8px}
+      .workspace{grid-template-rows:minmax(380px,60dvh) auto}
+      .map-wrap{height:60dvh;min-height:380px}
+      .sidebar{max-height:32dvh}
     }
   </style>
 </head>
@@ -95,7 +127,9 @@
         <div class="metric">Updated <strong id="updated-date">—</strong></div>
       </div>
     </div>
-    <div class="controls">
+    <button class="button mobile-filter-toggle" id="filter-toggle" type="button"
+            aria-expanded="false" aria-controls="map-controls">Filters</button>
+    <div class="controls" id="map-controls">
       <div class="control search-control">
         <label for="search-input">Search project, ID, or contractor</label>
         <input id="search-input" type="search" placeholder="Example: P001 or Fishtail">
@@ -140,7 +174,8 @@
     updatedDate:document.getElementById("updated-date"),search:document.getElementById("search-input"),
     status:document.getElementById("status-filter"),contractor:document.getElementById("contractor-filter"),
     reset:document.getElementById("reset-button"),download:document.getElementById("download-button"),
-    listToggle:document.getElementById("list-toggle"),sidebar:document.getElementById("sidebar"),
+    filterToggle:document.getElementById("filter-toggle"),listToggle:document.getElementById("list-toggle"),
+    header:document.querySelector(".header"),sidebar:document.getElementById("sidebar"),
     list:document.getElementById("project-list"),legend:document.getElementById("status-legend"),
     notice:document.getElementById("public-notice"),message:document.getElementById("map-message")
   };
@@ -205,9 +240,29 @@
 
   function initMap(){
     state.map=L.map("map",{zoomControl:true}).setView(state.config.default_center,state.config.default_zoom);
-    L.tileLayer(state.config.tile_url,{maxZoom:state.config.maximum_zoom,attribution:state.config.tile_attribution}).addTo(state.map);
+    L.tileLayer(state.config.tile_url,{
+      maxZoom:state.config.maximum_zoom,
+      attribution:state.config.tile_attribution
+    }).addTo(state.map);
     L.control.scale({imperial:false}).addTo(state.map);
     state.layer=L.layerGroup().addTo(state.map);
+
+    const mapElement=document.getElementById("map");
+    const refreshMap=()=>window.requestAnimationFrame(()=>state.map?.invalidateSize({pan:false}));
+
+    if("ResizeObserver" in window){
+      const observer=new ResizeObserver(refreshMap);
+      observer.observe(mapElement);
+      if(mapElement.parentElement) observer.observe(mapElement.parentElement);
+    }
+
+    window.addEventListener("resize",refreshMap,{passive:true});
+    window.addEventListener("orientationchange",()=>window.setTimeout(refreshMap,250),{passive:true});
+    window.addEventListener("pageshow",()=>window.setTimeout(refreshMap,50),{passive:true});
+
+    window.setTimeout(refreshMap,0);
+    window.setTimeout(refreshMap,150);
+    window.setTimeout(refreshMap,500);
   }
 
   function fillFilters(){
@@ -255,7 +310,11 @@
       marker.on("click",()=>{state.activeId=p.PK_ID;renderList()});
       state.markerById.set(p.PK_ID,marker);bounds.push([p.latitude,p.longitude]);
     });
-    if(bounds.length)state.map.fitBounds(bounds,{padding:[state.config.fit_bounds_padding,state.config.fit_bounds_padding]});
+    if(bounds.length){
+      state.map.invalidateSize({pan:false});
+      state.map.fitBounds(bounds,{padding:[state.config.fit_bounds_padding,state.config.fit_bounds_padding]});
+      window.setTimeout(()=>state.map.invalidateSize({pan:false}),80);
+    }
   }
 
   function renderMetrics(){
@@ -310,7 +369,20 @@
   el.search.addEventListener("input",applyFilters);el.status.addEventListener("change",applyFilters);el.contractor.addEventListener("change",applyFilters);
   el.reset.addEventListener("click",()=>{el.search.value="";el.status.value="";el.contractor.value="";applyFilters()});
   el.download.addEventListener("click",downloadGeoJSON);
-  el.listToggle.addEventListener("click",()=>{el.sidebar.classList.toggle("collapsed");window.setTimeout(()=>state.map?.invalidateSize(),220)});
+
+  el.filterToggle.addEventListener("click",()=>{
+    const open=el.header.classList.toggle("filters-open");
+    el.filterToggle.setAttribute("aria-expanded",String(open));
+    el.filterToggle.textContent=open?"Hide filters":"Filters";
+    window.setTimeout(()=>state.map?.invalidateSize({pan:false}),120);
+  });
+
+  el.listToggle.addEventListener("click",()=>{
+    el.sidebar.classList.toggle("collapsed");
+    window.setTimeout(()=>state.map?.invalidateSize({pan:false}),120);
+    window.setTimeout(()=>state.map?.invalidateSize({pan:false}),320);
+  });
+
   load();
 })();
 </script>
