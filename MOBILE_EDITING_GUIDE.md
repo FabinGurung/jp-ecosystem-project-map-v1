@@ -1,61 +1,113 @@
 # iPhone Editing Guide
 
-## Routine editing: change only `projects.csv`
+Use iPhone for small, careful updates after the full v1.2 package has already
+been installed from a computer.
 
-### Small correction in Safari
+Do not try to upload the entire v1.2 folder structure from iPhone. Hidden files
+and nested folders are easy to miss.
 
-1. Open the repository.
-2. Open `projects.csv`.
-3. Tap the pencil icon or **Edit file**.
-4. Change the value.
-5. Tap **Commit changes**.
-6. Use a clear message, such as `Correct P004 coordinates`.
-7. For a tiny correction, commit to `main`. For a large update, create a new branch.
-8. Wait for GitHub Actions and GitHub Pages to finish.
+## Simple project correction
 
-### Several changes using Numbers or Excel mobile
+1. Open the repository in Safari or the GitHub app.
+2. Confirm the branch:
 
-1. Download `projects.csv`.
-2. Open it in Apple Numbers or Microsoft Excel.
-3. Edit the rows.
-4. Export as CSV.
-5. Keep the filename exactly `projects.csv`.
-6. Replace the existing file in GitHub.
-7. Commit the replacement.
+   - use `main` only for a tiny approved production correction
+   - use a new branch for multiple or structural changes
 
-## Add a project
+3. Open `projects.csv`.
+4. Tap the pencil/Edit button.
+5. Change only the intended field.
+6. Do not change the three IDs of an existing project:
 
-Add a new row without changing the header row.
+   - `project_id`
+   - `company_project_code`
+   - `legacy_project_code`
 
-Important rules:
+7. Commit with a clear message such as:
 
-- `PK_ID` must be unique.
-- Latitude must be between -90 and 90.
-- Longitude must be between -180 and 180.
-- Status must match `map-config.json`.
-- Progress fields must be blank or between 0 and 100.
-- Use `TRUE` or `FALSE` for `is_public`.
-- Put text containing commas inside double quotes.
+   `Update PRJ-000004 public progress`
 
-## Change title, subtitle or colours
+8. Open **Actions**.
+9. Confirm **Validate operational map data** is green.
+10. If committed to `main`, wait for Pages deployment and check the live map.
 
-Edit `map-config.json`.
+## Add a project from iPhone
 
-## Large interface changes
+Adding a row is possible but easier in Numbers/Excel on a computer.
 
-Replace or edit `index.html`. Do not delete it first. Commit the replacement in one change.
+Required concepts:
 
-## Check every update
+- new immutable `project_id`
+- new company-specific `company_project_code`
+- legacy code only when one already exists
+- valid executing organization ID
+- project/source names
+- latitude and longitude
+- status
+- last updated
+- public flag
+- data quality and verification status
 
-1. Open **Actions**.
-2. Confirm **Validate project data** has a green check.
-3. Confirm **pages build and deployment** has a green check.
-4. Open the live website.
-5. Test the edited marker, search and filters.
+Do not copy the last row and forget to change its IDs.
+
+## Add an organization
+
+1. Add it to `organizations.csv`.
+2. Give it the next unused `ORG-000000` ID.
+3. Use the real verified name.
+4. Choose a controlled organization type.
+5. Do not enter private contact information or registration numbers publicly.
+6. Add a separate row to `project_parties.csv` if it has a project role.
+
+## User Committee / Samiti
+
+Use:
+
+```text
+organization_type = USER_COMMITTEE
+implementation_mechanism = GOVERNMENT_USER_COMMITTEE
+```
+
+Do not create separate Samiti or Community Implementation mechanism values.
+
+## Work and materials
+
+Avoid entering detailed BOQ and inventory data from iPhone until the source and
+public-visibility decision are verified.
+
+Remember:
+
+- rate and amount are internal by default
+- exact stock is internal by default
+- `is_public=FALSE` does not secure a committed row
+- never paste `#REF!` into a numeric field
+
+## CSV safety
+
+- Keep the header row unchanged.
+- Use `YYYY-MM-DD`.
+- Use a dot for decimals.
+- Store money as `526262.43`, not `5,26,262.43`.
+- Put text containing a comma inside double quotes.
+- Preserve latitude/longitude order in CSV.
+- GeoJSON automatically exports longitude/latitude order.
+
+## If the Action turns red
+
+1. Open the failed Action.
+2. Read the first `ERROR:` line.
+3. Return to the CSV.
+4. Correct the exact row/field.
+5. Commit the correction.
+6. Confirm the next Action is green.
+
+Warnings about an unknown sector or implementation mechanism are allowed when
+the real source has not yet been verified.
 
 ## Useful mobile tools
 
-- Safari for settings and quick edits
-- GitHub mobile app for issues and pull requests
-- Apple Numbers or Microsoft Excel for CSV
-- `github.dev/FabinGurung/jp-ecosystem-project-map` for a browser-based code editor
+- Safari for a one-cell correction
+- GitHub mobile app for pull requests and Action status
+- Apple Numbers or Microsoft Excel for reviewing a CSV
+
+Use Windows + GitHub Desktop for full package migrations and folder changes.

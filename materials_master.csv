@@ -1,0 +1,12 @@
+material_id,material_code,material_name,material_category,subcategory,default_unit,active,notes,data_quality_status,source_reference
+MAT-000001,CEMENT,Cement,Concrete Material,Binder,bag,TRUE,,VALID,User-provided material examples
+MAT-000002,REBAR,Reinforcement Steel,Steel,Rebar,kg,TRUE,,VALID,User-provided material examples
+MAT-000003,SAND,Sand,Aggregate,Fine Aggregate,cum,TRUE,,VALID,User-provided material examples
+MAT-000004,AGGREGATE,Aggregate,Aggregate,Coarse Aggregate,cum,TRUE,,VALID,User-provided material examples
+MAT-000005,BRICK,Brick,Masonry,Brick,no,TRUE,,VALID,User-provided material examples
+MAT-000006,BLOCK,Block,Masonry,Block,no,TRUE,,VALID,User-provided material examples
+MAT-000007,TILE,Tiles,Finishing Material,Tile,sqm,TRUE,,VALID,User-provided material examples
+MAT-000008,PAINT,Paint,Finishing Material,Paint,L/S,TRUE,Confirm product-specific unit before project inventory use.,UNVERIFIED,User-provided material examples
+MAT-000009,WATERPROOFING,Waterproofing Material,Waterproofing,General,L/S,TRUE,Confirm product-specific unit before project inventory use.,UNVERIFIED,User-provided material examples
+MAT-000010,TIMBER,Timber,Joinery,Timber,L/S,TRUE,Confirm product-specific unit before project inventory use.,UNVERIFIED,User-provided material examples
+MAT-000011,UPVC,UPVC Items,Joinery,UPVC,L/S,TRUE,Confirm product-specific unit before project inventory use.,UNVERIFIED,User-provided material examples

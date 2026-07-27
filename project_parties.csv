@@ -1,0 +1,8 @@
+project_party_id,project_id,party_entity_type,party_id,role,is_primary,start_date,end_date,remarks,is_public,data_quality_status,source_reference
+PPA-000001,PRJ-000001,ORGANIZATION,ORG-000002,CONTRACTOR,TRUE,,,Migrated from the v1.1.0 contractor field.,TRUE,VALID,v1.1.0 projects.csv row 2
+PPA-000002,PRJ-000002,ORGANIZATION,ORG-000001,CONTRACTOR,TRUE,,,Migrated from the v1.1.0 contractor field.,TRUE,VALID,v1.1.0 projects.csv row 3
+PPA-000003,PRJ-000003,ORGANIZATION,ORG-000001,CONTRACTOR,TRUE,,,Migrated from the v1.1.0 contractor field.,TRUE,VALID,v1.1.0 projects.csv row 4
+PPA-000004,PRJ-000004,ORGANIZATION,ORG-000001,CONTRACTOR,TRUE,,,Migrated from the v1.1.0 contractor field.,TRUE,VALID,v1.1.0 projects.csv row 5
+PPA-000005,PRJ-000005,ORGANIZATION,ORG-000001,CONTRACTOR,TRUE,,,Migrated from the v1.1.0 contractor field.,TRUE,VALID,v1.1.0 projects.csv row 6
+PPA-000006,PRJ-000006,ORGANIZATION,ORG-000001,CONTRACTOR,TRUE,,,Migrated from the v1.1.0 contractor field.,TRUE,VALID,v1.1.0 projects.csv row 7
+PPA-000007,PRJ-000007,ORGANIZATION,ORG-000001,CONTRACTOR,TRUE,,,Migrated from the v1.1.0 contractor field.,TRUE,VALID,v1.1.0 projects.csv row 8

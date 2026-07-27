@@ -1,0 +1,30 @@
+work_id,work_code,description,category,subcategory,default_unit,active,notes,data_quality_status,source_reference
+WRK-000001,RCC-PCC-M20,PCC (M20) for RCC Works,RCC,Concrete,cum,TRUE,,VALID,User-provided source work list
+WRK-000002,RCC-FORMWORK,Centering and Shuttering for RCC Works,RCC,Formwork,sqm,TRUE,,VALID,User-provided source work list
+WRK-000003,MAS-BRICK,Brick Masonry in Cement Mortar,Masonry,Brickwork,cum,TRUE,,VALID,User-provided source work list
+WRK-000004,FIN-STONE-CLADDING,Stone Cladding Work,Finishes,Cladding,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000005,FIN-PLASTER-INTERNAL,Internal Plaster,Finishes,Plaster,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000006,FIN-PLASTER-EXTERNAL,External Plaster,Finishes,Plaster,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000007,FIN-PUTTY-WALL,Wall Putty Work,Finishes,Putty,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000008,FIN-PUTTY-CEILING,Ceiling Putty Work,Finishes,Putty,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000009,FIN-PAINT-INTERNAL,Internal Emulsion Paint,Finishes,Painting,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000010,FIN-PAINT-EXTERNAL,External Weather Coat Paint,Finishes,Painting,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000011,FLR-SCREED,Floor Screed,Flooring,Screed,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000012,FLR-PUNNING,Floor Punning,Flooring,Punning,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000013,FLR-TILE-PORCELAIN-GLAZED,Porcelain Glazed Tile Flooring,Flooring,Tiles,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000014,FLR-TILE-PORCELAIN-NONGLAZED,Porcelain Non-Glazed Tile Flooring,Flooring,Tiles,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000015,FLR-TILE-SKIRTING,Tile Skirting,Flooring,Skirting,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000016,JOIN-SAL-FRAME,Sal Wood Door/Window Frames,Joinery,Timber,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000017,JOIN-SAL-MAIN-DOOR,Solid Sal Wood Main Door Shutter,Joinery,Timber,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000018,JOIN-SAL-DOOR,Solid Sal Wood Door Shutter,Joinery,Timber,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000019,JOIN-UPVC-WINDOW,UPVC Window Work,Joinery,UPVC,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000020,JOIN-UPVC-DOOR,UPVC Door Work,Joinery,UPVC,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000021,MET-WINDOW-GRILL,Window Grill,Metalwork,Grill,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000022,FIN-WOOD-POLISH,Wood Chapra Polishing,Finishes,Polishing,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000023,WPR-CEMENTITIOUS,Cementitious Waterproofing,Waterproofing,Cementitious,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000024,MET-SPIRAL-STAIR,MS Spiral Staircase,Metalwork,Staircase,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000025,MET-RAILING,MS Metal Railing,Metalwork,Railing,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000026,FIN-GRANITE,Granite Work,Finishes,Stone,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000027,RCC-REBAR,Reinforcement Steel,RCC,Reinforcement,kg,TRUE,,VALID,User-provided source work list
+WRK-000028,MET-HANDRAIL,Handrail,Metalwork,Handrail,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list
+WRK-000029,ROOF-DEKKRA,Dekkra Roof,Roofing,Roof Covering,,TRUE,Confirm the source BOQ unit before project assignment.,UNVERIFIED,User-provided source work list

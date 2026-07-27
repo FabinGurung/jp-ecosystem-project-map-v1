@@ -1,0 +1,1 @@
+inventory_id,project_id,material_id,quantity_on_site,reserved_quantity,available_quantity,unit,storage_location,condition,as_of_date,last_updated,remarks,is_public,data_quality_status,data_quality_issue,source_file,source_sheet,source_row,source_reference,imported_at,verified_by,verification_status

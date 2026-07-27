@@ -1,390 +1,132 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="JP Ecosystem public project-location map">
-  <!-- v2: corrected Leaflet CSS SRI + mobile-first map sizing + ResizeObserver -->
-  <title>JP Ecosystem Project Map</title>
+  <meta name="description" content="JP Ecosystem public operational project map">
+  <title>JP Ecosystem Operational Project Map</title>
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="preconnect" href="https://tile.openstreetmap.org">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-        crossorigin="">
-  <style>
-    :root {
-      --panel:#fff; --page:#f3f5f7; --text:#172033; --muted:#64748b;
-      --line:#dbe2ea; --accent:#175cd3; --danger:#b42318;
-      --shadow:0 10px 30px rgba(15,23,42,.14);
-      color-scheme:light;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--page);color:var(--text)}
-    button,input,select{font:inherit}
-    .app{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr)}
-    .header{position:relative;z-index:1000;background:var(--panel);border-bottom:1px solid var(--line);padding:12px max(14px,env(safe-area-inset-right)) 12px max(14px,env(safe-area-inset-left))}
-    .header-row{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-    .title-wrap{min-width:0}
-    h1{margin:0;font-size:clamp(18px,3vw,26px);line-height:1.2}
-    .subtitle{margin-top:3px;color:var(--muted);font-size:13px}
-    .metrics{display:flex;gap:8px;flex-wrap:wrap}
-    .metric{border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:#fff;font-size:13px;white-space:nowrap}
-    .metric strong{font-size:15px}
-    .controls{margin-top:10px;display:grid;grid-template-columns:minmax(180px,1.5fr) minmax(140px,.8fr) minmax(170px,1fr) auto auto;gap:8px;align-items:end}
-    .control label{display:block;margin:0 0 4px;font-size:12px;color:var(--muted)}
-    .control input,.control select,.button{width:100%;min-height:42px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text);padding:9px 11px}
-    .button{cursor:pointer;width:auto;font-weight:600;white-space:nowrap}
-    .button.primary{border-color:var(--accent);background:var(--accent);color:#fff}
-    .button:focus,input:focus,select:focus{outline:3px solid rgba(23,92,211,.20);outline-offset:1px}
-    .workspace{min-height:0;display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr)}
-    .sidebar{min-height:0;overflow:auto;background:var(--panel);border-right:1px solid var(--line)}
-    .notice{margin:12px;padding:10px 12px;border:1px solid #f2c94c;border-radius:10px;background:#fff9dc;font-size:12px;line-height:1.45}
-    .status-row{padding:0 12px 10px;display:flex;gap:8px;flex-wrap:wrap}
-    .status-chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
-    .status-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
-    .project-list{border-top:1px solid var(--line)}
-    .project-item{width:100%;border:0;border-bottom:1px solid var(--line);background:#fff;text-align:left;padding:12px;cursor:pointer}
-    .project-item:hover,.project-item:focus{background:#f8fafc;outline:none}
-    .project-item.active{background:#eef4ff;box-shadow:inset 4px 0 0 var(--accent)}
-    .project-item-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
-    .project-id{font-weight:700;font-size:13px;color:var(--accent)}
-    .project-name{margin-top:3px;font-weight:650;line-height:1.3}
-    .project-meta{margin-top:5px;color:var(--muted);font-size:12px;line-height:1.4}
-    .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 7px;font-size:11px;white-space:nowrap}
-    .map-wrap{position:relative;min-width:0;min-height:0}
-    #map{width:100%;height:100%;min-height:420px;background:#e5e7eb}
-    .map-message{position:absolute;z-index:900;top:12px;left:50%;transform:translateX(-50%);max-width:min(90%,560px);padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.96);box-shadow:var(--shadow);font-size:13px;display:none}
-    .map-message.error{display:block;color:var(--danger);border:1px solid #fda29b}
-    .popup h3{margin:0 0 6px;font-size:16px}
-    .popup-grid{display:grid;grid-template-columns:max-content 1fr;gap:5px 9px;font-size:13px}
-    .popup-grid dt{color:var(--muted);font-weight:600}
-    .popup-grid dd{margin:0;overflow-wrap:anywhere}
-    .popup-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .popup-actions a{text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:6px 8px;color:var(--accent);font-weight:600;font-size:12px}
-    .leaflet-tooltip{font-weight:700;border-radius:7px;padding:3px 6px}
-    .empty-state{padding:28px 16px;text-align:center;color:var(--muted)}
-    .mobile-list-toggle{display:none}
-    .mobile-filter-toggle{display:none}
-    .map-wrap{height:100%}
-    .leaflet-container{width:100%;height:100%}
-    @media(max-width:860px){
-      .header{padding:10px 12px}
-      .header-row{align-items:flex-start}
-      .subtitle{font-size:12px}
-      .metrics{gap:6px}
-      .metric{padding:5px 8px;font-size:12px}
-
-      .mobile-filter-toggle{display:inline-flex;margin-top:8px}
-      .controls{display:none;margin-top:8px;grid-template-columns:1fr 1fr}
-      .header.filters-open .controls{display:grid}
-      .controls .search-control{grid-column:1/-1}
-
-      .workspace{
-        grid-template-columns:1fr;
-        grid-template-rows:minmax(420px,62dvh) auto;
-      }
-      .map-wrap{
-        grid-row:1;
-        min-height:420px;
-        height:62dvh;
-      }
-      #map{
-        min-height:0;
-        height:100%;
-      }
-
-      .sidebar{
-        grid-row:2;
-        max-height:34dvh;
-        border-right:0;
-        border-top:1px solid var(--line);
-      }
-      .mobile-list-toggle{display:inline-flex}
-      .sidebar.collapsed{max-height:0;overflow:hidden;border-top:0}
-    }
-
-    @media(max-width:520px){
-      .controls{grid-template-columns:1fr}
-      .controls .search-control{grid-column:auto}
-      .header{padding-bottom:8px}
-      .workspace{grid-template-rows:minmax(380px,60dvh) auto}
-      .map-wrap{height:60dvh;min-height:380px}
-      .sidebar{max-height:32dvh}
-    }
-  </style>
+        crossorigin>
+  <link rel="stylesheet" href="assets/css/app.css">
 </head>
 <body>
-<div class="app">
-  <header class="header">
-    <div class="header-row">
-      <div class="title-wrap">
-        <h1 id="site-title">JP Ecosystem Project Map</h1>
-        <div class="subtitle" id="site-subtitle">Loading project data…</div>
+  <div class="app-shell">
+    <header class="app-header" id="app-header">
+      <div class="header-main">
+        <div class="title-wrap">
+          <div class="eyebrow">
+            <span>JP Ecosystem</span>
+            <span class="version-badge" id="version-badge">v1.2.0-dev</span>
+          </div>
+          <h1 id="site-title">Operational Project Map</h1>
+          <p id="site-subtitle">Loading public project information…</p>
+        </div>
+        <div class="metrics" aria-live="polite">
+          <div class="metric"><strong id="visible-count">0</strong><span>visible</span></div>
+          <div class="metric"><strong id="public-count">0</strong><span>public</span></div>
+          <div class="metric"><strong id="updated-date">—</strong><span>updated</span></div>
+        </div>
       </div>
-      <div class="metrics" aria-live="polite">
-        <div class="metric"><strong id="visible-count">0</strong> visible</div>
-        <div class="metric"><strong id="public-count">0</strong> public</div>
-        <div class="metric">Updated <strong id="updated-date">—</strong></div>
+
+      <button class="button filter-toggle" id="filter-toggle" type="button"
+              aria-expanded="false" aria-controls="map-controls">
+        Filters
+      </button>
+
+      <div class="controls" id="map-controls">
+        <div class="control search-control">
+          <label for="search-input">Search project, code, or company</label>
+          <input id="search-input" type="search" autocomplete="off"
+                 placeholder="Example: FBL-001, P002, or Samir">
+        </div>
+        <div class="control">
+          <label for="status-filter">Status</label>
+          <select id="status-filter">
+            <option value="">All statuses</option>
+          </select>
+        </div>
+        <div class="control">
+          <label for="company-filter">Company</label>
+          <select id="company-filter">
+            <option value="">All companies</option>
+          </select>
+        </div>
+        <button class="button" id="reset-button" type="button">Reset</button>
+        <button class="button" id="list-toggle" type="button"
+                aria-expanded="true" aria-controls="project-pane">
+          Hide list
+        </button>
+        <button class="button button-primary" id="download-button" type="button">
+          Download GeoJSON
+        </button>
       </div>
-    </div>
-    <button class="button mobile-filter-toggle" id="filter-toggle" type="button"
-            aria-expanded="false" aria-controls="map-controls">Filters</button>
-    <div class="controls" id="map-controls">
-      <div class="control search-control">
-        <label for="search-input">Search project, ID, or contractor</label>
-        <input id="search-input" type="search" placeholder="Example: P001 or Fishtail">
-      </div>
-      <div class="control">
-        <label for="status-filter">Status</label>
-        <select id="status-filter"><option value="">All statuses</option></select>
-      </div>
-      <div class="control">
-        <label for="contractor-filter">Contractor</label>
-        <select id="contractor-filter"><option value="">All contractors</option></select>
-      </div>
-      <button class="button" id="reset-button" type="button">Reset</button>
-      <button class="button mobile-list-toggle" id="list-toggle" type="button">Show/hide list</button>
-      <button class="button primary" id="download-button" type="button">Download GeoJSON</button>
-    </div>
-  </header>
+    </header>
 
-  <main class="workspace">
-    <aside class="sidebar" id="sidebar" aria-label="Project list">
-      <div class="notice" id="public-notice"></div>
-      <div class="status-row" id="status-legend" aria-label="Status legend"></div>
-      <div class="project-list" id="project-list"></div>
-    </aside>
-    <section class="map-wrap" aria-label="Interactive project map">
-      <div id="map"></div>
-      <div id="map-message" class="map-message" role="alert"></div>
-    </section>
-  </main>
-</div>
+    <main class="workspace" id="workspace">
+      <aside class="project-pane" id="project-pane" aria-label="Public project list">
+        <div class="public-notice" id="public-notice"></div>
+        <div class="status-legend" id="status-legend" role="group"
+             aria-label="Project status legend"></div>
+        <div class="list-heading">
+          <h2>Projects</h2>
+          <span id="list-count">0</span>
+        </div>
+        <div class="project-list" id="project-list"></div>
+      </aside>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin=""></script>
-<script>
-(() => {
-  "use strict";
-  const state={config:null,projects:[],filtered:[],map:null,layer:null,markerById:new Map(),activeId:null};
-  const el={
-    siteTitle:document.getElementById("site-title"),siteSubtitle:document.getElementById("site-subtitle"),
-    visibleCount:document.getElementById("visible-count"),publicCount:document.getElementById("public-count"),
-    updatedDate:document.getElementById("updated-date"),search:document.getElementById("search-input"),
-    status:document.getElementById("status-filter"),contractor:document.getElementById("contractor-filter"),
-    reset:document.getElementById("reset-button"),download:document.getElementById("download-button"),
-    filterToggle:document.getElementById("filter-toggle"),listToggle:document.getElementById("list-toggle"),
-    header:document.querySelector(".header"),sidebar:document.getElementById("sidebar"),
-    list:document.getElementById("project-list"),legend:document.getElementById("status-legend"),
-    notice:document.getElementById("public-notice"),message:document.getElementById("map-message")
-  };
+      <section class="map-stage" aria-label="Interactive project map">
+        <div id="map"></div>
+        <div id="map-message" class="map-message" role="alert"></div>
+        <button class="map-list-button" id="map-list-button" type="button">
+          Projects
+        </button>
+      </section>
 
-  function showError(message){el.message.textContent=message;el.message.className="map-message error"}
+      <aside class="detail-panel" id="detail-panel" aria-label="Selected project details" inert>
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <header class="detail-header">
+          <div>
+            <div class="detail-code" id="detail-code">—</div>
+            <h2 id="detail-title">Select a project</h2>
+            <p id="detail-subtitle"></p>
+          </div>
+          <button class="icon-button" id="detail-close" type="button" aria-label="Close project details">×</button>
+        </header>
 
-  function parseCSV(text){
-    const rows=[];let row=[],field="",quoted=false;
-    for(let i=0;i<text.length;i+=1){
-      const char=text[i],next=text[i+1];
-      if(quoted){
-        if(char==='"'&&next==='"'){field+='"';i+=1}
-        else if(char==='"'){quoted=false}
-        else{field+=char}
-      }else if(char==='"'){quoted=true}
-      else if(char===","){row.push(field);field=""}
-      else if(char==="\n"){row.push(field.replace(/\r$/,""));rows.push(row);row=[];field=""}
-      else{field+=char}
-    }
-    if(field.length||row.length){row.push(field.replace(/\r$/,""));rows.push(row)}
-    const headers=(rows.shift()||[]).map(v=>v.replace(/^\uFEFF/,"").trim());
-    return rows.filter(v=>v.some(x=>x.trim()!=="")).map(v=>Object.fromEntries(headers.map((h,i)=>[h,(v[i]||"").trim()])));
-  }
+        <div class="detail-tabs" role="tablist" aria-label="Project information sections">
+          <button class="detail-tab active" id="tab-overview" type="button" role="tab"
+                  aria-selected="true" aria-controls="panel-overview" data-tab="overview">
+            Overview
+          </button>
+          <button class="detail-tab" id="tab-works" type="button" role="tab"
+                  aria-selected="false" aria-controls="panel-works" data-tab="works">
+            Works <span class="tab-count" id="works-tab-count">0</span>
+          </button>
+          <button class="detail-tab" id="tab-materials" type="button" role="tab"
+                  aria-selected="false" aria-controls="panel-materials" data-tab="materials">
+            Materials <span class="tab-count" id="materials-tab-count">0</span>
+          </button>
+        </div>
 
-  const parseBoolean=value=>!["false","0","no","n"].includes(String(value||"").trim().toLowerCase());
-  function parsePercent(value){if(value==="")return null;const n=Number(value);return Number.isFinite(n)&&n>=0&&n<=100?n:null}
+        <div class="detail-body">
+          <section class="tab-panel active" id="panel-overview" role="tabpanel"
+                   aria-labelledby="tab-overview"></section>
+          <section class="tab-panel" id="panel-works" role="tabpanel"
+                   aria-labelledby="tab-works" hidden></section>
+          <section class="tab-panel" id="panel-materials" role="tabpanel"
+                   aria-labelledby="tab-materials" hidden></section>
+        </div>
+      </aside>
+    </main>
+  </div>
 
-  function normalizeProject(raw,index){
-    const latitude=Number(raw.latitude),longitude=Number(raw.longitude);
-    const required=["PK_ID","project_name","contractor","status","latitude","longitude"];
-    const missing=required.filter(key=>!String(raw[key]||"").trim());
-    if(missing.length)throw new Error(`Row ${index+2}: missing ${missing.join(", ")}`);
-    if(!Number.isFinite(latitude)||latitude<-90||latitude>90)throw new Error(`Row ${index+2}: invalid latitude`);
-    if(!Number.isFinite(longitude)||longitude<-180||longitude>180)throw new Error(`Row ${index+2}: invalid longitude`);
-    if(!state.config.status_styles[raw.status])throw new Error(`Row ${index+2}: unknown status "${raw.status}"`);
-    return {...raw,latitude,longitude,display_name:raw.display_name||raw.project_name.replaceAll("_"," "),
-      physical_progress_percent:parsePercent(raw.physical_progress_percent),
-      financial_progress_percent:parsePercent(raw.financial_progress_percent),
-      is_public:parseBoolean(raw.is_public)};
-  }
-
-  function escapeHTML(value){return String(value??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
-  function prettyDate(value){if(!value)return"—";const d=new Date(`${value}T00:00:00`);return Number.isNaN(d.getTime())?value:new Intl.DateTimeFormat("en",{year:"numeric",month:"short",day:"numeric"}).format(d)}
-  const directions=p=>`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(p.latitude+","+p.longitude)}`;
-
-  function popupHTML(p){
-    const rows=[
-      ["Status",p.status],["Contractor",p.contractor],["Client",p.client_name],
-      ["Project manager",p.project_manager],["Site engineer",p.site_engineer],
-      ["Physical progress",p.physical_progress_percent===null?"":`${p.physical_progress_percent}%`],
-      ["Financial progress",p.financial_progress_percent===null?"":`${p.financial_progress_percent}%`],
-      ["Start date",p.start_date?prettyDate(p.start_date):""],
-      ["Target completion",p.target_completion_date?prettyDate(p.target_completion_date):""],
-      ["Latest update",p.latest_update],["Last updated",p.last_updated?prettyDate(p.last_updated):""],
-      ["Coordinates",state.config.show_coordinates?`${p.latitude}, ${p.longitude}`:""],["Notes",p.public_notes]
-    ].filter(([,v])=>v!=="");
-    const details=rows.map(([k,v])=>`<dt>${escapeHTML(k)}</dt><dd>${escapeHTML(v)}</dd>`).join("");
-    const actions=[`<a href="${directions(p)}" target="_blank" rel="noopener">Directions</a>`];
-    if(p.details_url)actions.push(`<a href="${escapeHTML(p.details_url)}" target="_blank" rel="noopener">Project details</a>`);
-    return `<div class="popup"><h3>${escapeHTML(p.PK_ID)} — ${escapeHTML(p.display_name)}</h3><dl class="popup-grid">${details}</dl><div class="popup-actions">${actions.join("")}</div></div>`;
-  }
-
-  function initMap(){
-    state.map=L.map("map",{zoomControl:true}).setView(state.config.default_center,state.config.default_zoom);
-    L.tileLayer(state.config.tile_url,{
-      maxZoom:state.config.maximum_zoom,
-      attribution:state.config.tile_attribution
-    }).addTo(state.map);
-    L.control.scale({imperial:false}).addTo(state.map);
-    state.layer=L.layerGroup().addTo(state.map);
-
-    const mapElement=document.getElementById("map");
-    const refreshMap=()=>window.requestAnimationFrame(()=>state.map?.invalidateSize({pan:false}));
-
-    if("ResizeObserver" in window){
-      const observer=new ResizeObserver(refreshMap);
-      observer.observe(mapElement);
-      if(mapElement.parentElement) observer.observe(mapElement.parentElement);
-    }
-
-    window.addEventListener("resize",refreshMap,{passive:true});
-    window.addEventListener("orientationchange",()=>window.setTimeout(refreshMap,250),{passive:true});
-    window.addEventListener("pageshow",()=>window.setTimeout(refreshMap,50),{passive:true});
-
-    window.setTimeout(refreshMap,0);
-    window.setTimeout(refreshMap,150);
-    window.setTimeout(refreshMap,500);
-  }
-
-  function fillFilters(){
-    const statuses=[...new Set(state.projects.map(p=>p.status))].sort((a,b)=>state.config.status_styles[a].order-state.config.status_styles[b].order);
-    const contractors=[...new Set(state.projects.map(p=>p.contractor))].sort();
-    statuses.forEach(value=>{const o=document.createElement("option");o.value=value;o.textContent=value;el.status.append(o)});
-    contractors.forEach(value=>{const o=document.createElement("option");o.value=value;o.textContent=value;el.contractor.append(o)});
-  }
-
-  function renderLegend(){
-    el.legend.replaceChildren();
-    Object.entries(state.config.status_styles).sort(([,a],[,b])=>a.order-b.order).forEach(([status,style])=>{
-      if(!state.projects.some(p=>p.status===status))return;
-      const chip=document.createElement("span");chip.className="status-chip";
-      chip.innerHTML=`<span class="status-dot" style="background:${escapeHTML(style.color)}"></span>${escapeHTML(style.label)}`;
-      el.legend.append(chip);
-    });
-  }
-
-  function matches(p){
-    const q=el.search.value.trim().toLowerCase(),status=el.status.value,contractor=el.contractor.value;
-    const hay=[p.PK_ID,p.project_name,p.display_name,p.contractor,p.client_name,p.project_manager,p.site_engineer,p.latest_update,p.public_notes].join(" ").toLowerCase();
-    return(!q||hay.includes(q))&&(!status||p.status===status)&&(!contractor||p.contractor===contractor);
-  }
-
-  function renderList(){
-    el.list.replaceChildren();
-    if(!state.filtered.length){const empty=document.createElement("div");empty.className="empty-state";empty.textContent="No projects match the current filters.";el.list.append(empty);return}
-    state.filtered.forEach(p=>{
-      const button=document.createElement("button");button.type="button";
-      button.className=`project-item${state.activeId===p.PK_ID?" active":""}`;
-      const style=state.config.status_styles[p.status],progress=p.physical_progress_percent===null?"":` · ${p.physical_progress_percent}% physical`;
-      button.innerHTML=`<div class="project-item-head"><div><div class="project-id">${escapeHTML(p.PK_ID)}</div><div class="project-name">${escapeHTML(p.display_name)}</div></div><span class="badge"><span class="status-dot" style="background:${escapeHTML(style.color)}"></span>${escapeHTML(style.label)}</span></div><div class="project-meta">${escapeHTML(p.contractor)}${escapeHTML(progress)}</div>`;
-      button.addEventListener("click",()=>focusProject(p.PK_ID));el.list.append(button);
-    });
-  }
-
-  function renderMap(){
-    state.layer.clearLayers();state.markerById.clear();const bounds=[];
-    state.filtered.forEach(p=>{
-      const style=state.config.status_styles[p.status];
-      const marker=L.circleMarker([p.latitude,p.longitude],{radius:state.config.marker.radius,color:style.color,fillColor:style.color,fillOpacity:state.config.marker.fill_opacity,weight:state.config.marker.weight})
-        .bindTooltip(p.PK_ID,{permanent:true,direction:state.config.marker.tooltip_direction,offset:state.config.marker.tooltip_offset})
-        .bindPopup(popupHTML(p),{minWidth:270}).addTo(state.layer);
-      marker.on("click",()=>{state.activeId=p.PK_ID;renderList()});
-      state.markerById.set(p.PK_ID,marker);bounds.push([p.latitude,p.longitude]);
-    });
-    if(bounds.length){
-      state.map.invalidateSize({pan:false});
-      state.map.fitBounds(bounds,{padding:[state.config.fit_bounds_padding,state.config.fit_bounds_padding]});
-      window.setTimeout(()=>state.map.invalidateSize({pan:false}),80);
-    }
-  }
-
-  function renderMetrics(){
-    el.visibleCount.textContent=String(state.filtered.length);el.publicCount.textContent=String(state.projects.length);
-    const dates=state.projects.map(p=>p.last_updated).filter(Boolean).sort();el.updatedDate.textContent=dates.length?prettyDate(dates.at(-1)):"—";
-  }
-
-  function applyFilters(){
-    state.filtered=state.projects.filter(matches);
-    if(!state.filtered.some(p=>p.PK_ID===state.activeId))state.activeId=null;
-    renderMap();renderList();renderMetrics();
-  }
-
-  function focusProject(id){
-    const p=state.projects.find(x=>x.PK_ID===id),marker=state.markerById.get(id);if(!p||!marker)return;
-    state.activeId=id;state.map.setView([p.latitude,p.longitude],Math.max(state.map.getZoom(),15),{animate:true});marker.openPopup();renderList();
-  }
-
-  function downloadGeoJSON(){
-    const data={type:"FeatureCollection",name:"jp_ecosystem_project_map",features:state.filtered.map(p=>({
-      type:"Feature",id:p.PK_ID,geometry:{type:"Point",coordinates:[p.longitude,p.latitude]},
-      properties:Object.fromEntries(Object.entries(p).filter(([k])=>!["latitude","longitude"].includes(k)))
-    }))};
-    const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/geo+json"}),url=URL.createObjectURL(blob),a=document.createElement("a");
-    a.href=url;a.download="jp-ecosystem-projects.geojson";document.body.append(a);a.click();a.remove();URL.revokeObjectURL(url);
-  }
-
-  async function load(){
-    try{
-      const bust=`v=${Date.now()}`;
-      const [cRes,csvRes]=await Promise.all([fetch(`map-config.json?${bust}`,{cache:"no-store"}),fetch(`projects.csv?${bust}`,{cache:"no-store"})]);
-      if(!cRes.ok)throw new Error(`Could not load map-config.json (${cRes.status})`);
-      if(!csvRes.ok)throw new Error(`Could not load projects.csv (${csvRes.status})`);
-      state.config=await cRes.json();
-      const raw=parseCSV(await csvRes.text()),accepted=[],errors=[],ids=new Set();
-      raw.forEach((item,index)=>{
-        try{
-          const p=normalizeProject(item,index);if(!p.is_public)return;
-          if(ids.has(p.PK_ID))throw new Error(`Row ${index+2}: duplicate PK_ID "${p.PK_ID}"`);
-          ids.add(p.PK_ID);accepted.push(p);
-        }catch(error){errors.push(error.message)}
-      });
-      state.projects=accepted;
-      el.siteTitle.textContent=state.config.site_title;el.siteSubtitle.textContent=state.config.site_subtitle;
-      el.notice.textContent=state.config.public_notice;el.notice.hidden=!state.config.show_public_notice;
-      el.download.hidden=!state.config.show_download_buttons;
-      initMap();fillFilters();renderLegend();applyFilters();
-      if(errors.length)showError(`${errors.length} data row(s) were skipped. First issue: ${errors[0]}`);
-    }catch(error){showError(`The map could not load its data. ${error.message}`);el.siteSubtitle.textContent="Data-loading error"}
-  }
-
-  el.search.addEventListener("input",applyFilters);el.status.addEventListener("change",applyFilters);el.contractor.addEventListener("change",applyFilters);
-  el.reset.addEventListener("click",()=>{el.search.value="";el.status.value="";el.contractor.value="";applyFilters()});
-  el.download.addEventListener("click",downloadGeoJSON);
-
-  el.filterToggle.addEventListener("click",()=>{
-    const open=el.header.classList.toggle("filters-open");
-    el.filterToggle.setAttribute("aria-expanded",String(open));
-    el.filterToggle.textContent=open?"Hide filters":"Filters";
-    window.setTimeout(()=>state.map?.invalidateSize({pan:false}),120);
-  });
-
-  el.listToggle.addEventListener("click",()=>{
-    el.sidebar.classList.toggle("collapsed");
-    window.setTimeout(()=>state.map?.invalidateSize({pan:false}),120);
-    window.setTimeout(()=>state.map?.invalidateSize({pan:false}),320);
-  });
-
-  load();
-})();
-</script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin></script>
+  <script type="module" src="assets/js/app.js"></script>
 </body>
 </html>

@@ -1,9 +1,9 @@
 {
-  "app_version": "1.1.0",
-  "data_schema_version": "1.0.0",
-  "site_title": "JP Ecosystem Project Map",
-  "site_subtitle": "Coordinate-verified project locations in Pokhara, Nepal",
-  "public_notice": "Public project information only. Sensitive financial, client-contact, and internal site records should not be published here.",
+  "app_version": "1.2.0-dev",
+  "data_schema_version": "2.0.0",
+  "site_title": "JP Ecosystem Operational Project Map",
+  "site_subtitle": "Public project locations and approved operational updates in Pokhara, Nepal",
+  "public_notice": "Public data only. Files in this public repository are downloadable even when a row is hidden from the interface. Never enter private contacts, detailed internal finance, confidential BOQ rates, supplier balances, or restricted stock information here.",
   "default_center": [
     28.2096,
     83.9856
@@ -13,49 +13,188 @@
   "maximum_zoom": 19,
   "tile_url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   "tile_attribution": "&copy; OpenStreetMap contributors",
+  "data_files": {
+    "projects": "projects.csv",
+    "organizations": "organizations.csv",
+    "people": "people.csv",
+    "project_parties": "project_parties.csv",
+    "project_funding": "project_funding.csv",
+    "work_catalog": "work_catalog.csv",
+    "project_work_items": "project_work_items.csv",
+    "materials_master": "materials_master.csv",
+    "project_material_inventory": "project_material_inventory.csv"
+  },
+  "controlled_values": {
+    "project_sectors": [
+      "PRIVATE",
+      "GOVERNMENT_PUBLIC",
+      "OTHER"
+    ],
+    "implementation_mechanisms": [
+      "PRIVATE_DIRECT",
+      "PRIVATE_CONTRACT",
+      "GOVERNMENT_CONTRACTOR_CONTRACT",
+      "GOVERNMENT_USER_COMMITTEE",
+      "OTHER"
+    ],
+    "government_levels": [
+      "FEDERAL",
+      "PROVINCIAL",
+      "LOCAL",
+      "OTHER"
+    ],
+    "organization_types": [
+      "PRIVATE_COMPANY",
+      "CONTRACTOR",
+      "CONSULTANT",
+      "GOVERNMENT_AGENCY",
+      "MUNICIPALITY",
+      "RURAL_MUNICIPALITY",
+      "WARD_OFFICE",
+      "USER_COMMITTEE",
+      "SUPPLIER",
+      "INSTITUTION",
+      "NGO",
+      "OTHER"
+    ],
+    "party_entity_types": [
+      "ORGANIZATION",
+      "PERSON"
+    ],
+    "party_roles": [
+      "OWNER",
+      "CLIENT",
+      "FUNDING_BODY",
+      "ADMINISTRATIVE_BODY",
+      "IMPLEMENTING_BODY",
+      "CONTRACTOR",
+      "CONSULTANT",
+      "DESIGNER",
+      "SUPERVISOR",
+      "PROJECT_MANAGER",
+      "SITE_ENGINEER",
+      "USER_COMMITTEE",
+      "SUPPLIER",
+      "OTHER"
+    ],
+    "funding_types": [
+      "PRIVATE",
+      "FEDERAL_GOVERNMENT",
+      "PROVINCIAL_GOVERNMENT",
+      "LOCAL_GOVERNMENT",
+      "WARD_BUDGET",
+      "USER_COMMITTEE_CONTRIBUTION",
+      "DONATION",
+      "GRANT",
+      "LOAN",
+      "COMPANY_INTERNAL",
+      "MIXED",
+      "OTHER"
+    ],
+    "work_statuses": [
+      "NOT_STARTED",
+      "IN_PROGRESS",
+      "COMPLETED",
+      "ON_HOLD",
+      "BLOCKED",
+      "NOT_APPLICABLE"
+    ],
+    "material_conditions": [
+      "GOOD",
+      "DAMAGED",
+      "PARTIAL_DAMAGE",
+      "WET",
+      "RUSTED",
+      "EXPIRED",
+      "UNKNOWN",
+      "OTHER"
+    ],
+    "data_quality_statuses": [
+      "VALID",
+      "WARNING",
+      "ERROR",
+      "UNVERIFIED",
+      "VERIFIED"
+    ],
+    "verification_statuses": [
+      "UNVERIFIED",
+      "VERIFIED"
+    ]
+  },
+  "human_labels": {
+    "PRIVATE": "Private",
+    "GOVERNMENT_PUBLIC": "Government / Public",
+    "OTHER": "Other",
+    "PRIVATE_DIRECT": "Private Direct",
+    "PRIVATE_CONTRACT": "Private Contract",
+    "GOVERNMENT_CONTRACTOR_CONTRACT": "Government Contractor Contract",
+    "GOVERNMENT_USER_COMMITTEE": "Government User Committee / Samiti",
+    "FEDERAL": "Federal",
+    "PROVINCIAL": "Provincial",
+    "LOCAL": "Local",
+    "NOT_STARTED": "Not Started",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED": "Completed",
+    "ON_HOLD": "On Hold",
+    "BLOCKED": "Blocked",
+    "NOT_APPLICABLE": "Not Applicable",
+    "GOOD": "Good",
+    "DAMAGED": "Damaged",
+    "PARTIAL_DAMAGE": "Partial Damage",
+    "WET": "Wet",
+    "RUSTED": "Rusted",
+    "EXPIRED": "Expired",
+    "UNKNOWN": "Unknown"
+  },
   "status_styles": {
     "Construction": {
-      "color": "#d73027",
+      "color": "#d92d20",
       "label": "Construction",
       "order": 1
     },
     "Completed": {
-      "color": "#1a9850",
+      "color": "#15803d",
       "label": "Completed",
       "order": 2
     },
     "Approval": {
-      "color": "#4575b4",
+      "color": "#2563eb",
       "label": "Approval",
       "order": 3
     },
     "Planned": {
-      "color": "#7b61a8",
+      "color": "#7c3aed",
       "label": "Planned",
       "order": 4
     },
     "On Hold": {
-      "color": "#f59e0b",
+      "color": "#d97706",
       "label": "On Hold",
       "order": 5
     },
     "Cancelled": {
-      "color": "#6b7280",
+      "color": "#64748b",
       "label": "Cancelled",
       "order": 6
     }
   },
   "marker": {
+    "label_field": "company_project_code",
     "radius": 9,
     "weight": 2,
-    "fill_opacity": 0.9,
+    "fill_opacity": 0.92,
     "tooltip_direction": "top",
     "tooltip_offset": [
       0,
       -8
     ]
   },
-  "show_coordinates": true,
-  "show_download_buttons": true,
-  "show_public_notice": true
+  "features": {
+    "show_coordinates": true,
+    "show_download_buttons": true,
+    "show_public_notice": true,
+    "show_financial_progress": false,
+    "show_work_costs": false,
+    "show_inventory_quantities": false
+  }
 }

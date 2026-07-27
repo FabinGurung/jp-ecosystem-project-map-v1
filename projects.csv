@@ -1,8 +1,8 @@
-﻿PK_ID,project_name,display_name,contractor,latitude,longitude,status,client_name,project_manager,site_engineer,physical_progress_percent,financial_progress_percent,start_date,target_completion_date,last_updated,latest_update,photo_url,details_url,public_notes,is_public
-P001,14_bishal_paija,14 Bishal Paija,Rohini Engineering and Builders Pvt Ltd,28.200667,84.018222,Construction,,,,,,,,2026-07-23,,,,,TRUE
-P002,17_samir_man_ghubaju,17 Samir Man Ghubaju,Fishtail Builders Pvt Ltd,28.196778,83.970778,Construction,,,,,,,,2026-07-23,,,,,TRUE
-P003,13_hari_baral,13 Hari Baral,Fishtail Builders Pvt Ltd,28.226111,84.051389,Construction,,,,,,,,2026-07-23,,,,,TRUE
-P004,16_yamuna_pun_adai,16 Yamuna Pun Adai,Fishtail Builders Pvt Ltd,28.2555,83.97975,Completed,,,,100,,,,2026-07-23,,,,,TRUE
-P005,30_sabitri_giri_dipti_giri,30 Sabitri Giri / Dipti Giri,Fishtail Builders Pvt Ltd,28.160278,84.0825,Construction,,,,,,,,2026-07-23,,,,,TRUE
-P006,31_sharada_adhikari,31 Sharada Adhikari,Fishtail Builders Pvt Ltd,28.1657989,84.115339,Construction,,,,,,,,2026-07-23,,,,,TRUE
-P007,15_narayani_parajuli,15 Narayani Parajuli,Fishtail Builders Pvt Ltd,28.1951253,83.9956481,Approval,,,,,,,,2026-07-23,,,,,TRUE
+project_id,company_project_code,legacy_project_code,project_name,display_name,project_sector,government_level,implementation_mechanism,executing_company_id,latitude,longitude,status,physical_progress_percent,financial_progress_percent,start_date,target_completion_date,actual_completion_date,last_updated,latest_update,photo_url,details_url,public_notes,is_public,data_quality_status,source_file,source_sheet,source_row,source_reference,imported_at,verified_by,verification_status
+PRJ-000001,REB-001,P001,14_bishal_paija,14 Bishal Paija,,,,ORG-000002,28.200667,84.018222,Construction,,,,,,2026-07-23,,,,,TRUE,VALID,v1.1.0/projects.csv,,2,v1.1.0 stable project record,2026-07-26,,VERIFIED
+PRJ-000002,FBL-001,P002,17_samir_man_ghubaju,17 Samir Man Ghubaju,,,,ORG-000001,28.196778,83.970778,Construction,,,,,,2026-07-23,,,,,TRUE,VALID,v1.1.0/projects.csv,,3,v1.1.0 stable project record,2026-07-26,,VERIFIED
+PRJ-000003,FBL-002,P003,13_hari_baral,13 Hari Baral,,,,ORG-000001,28.226111,84.051389,Construction,,,,,,2026-07-23,,,,,TRUE,VALID,v1.1.0/projects.csv,,4,v1.1.0 stable project record,2026-07-26,,VERIFIED
+PRJ-000004,FBL-003,P004,16_yamuna_pun_adai,16 Yamuna Pun Adai,,,,ORG-000001,28.2555,83.97975,Completed,100,,,,,2026-07-23,,,,,TRUE,VALID,v1.1.0/projects.csv,,5,v1.1.0 stable project record,2026-07-26,,VERIFIED
+PRJ-000005,FBL-004,P005,30_sabitri_giri_dipti_giri,30 Sabitri Giri / Dipti Giri,,,,ORG-000001,28.160278,84.0825,Construction,,,,,,2026-07-23,,,,,TRUE,VALID,v1.1.0/projects.csv,,6,v1.1.0 stable project record,2026-07-26,,VERIFIED
+PRJ-000006,FBL-005,P006,31_sharada_adhikari,31 Sharada Adhikari,,,,ORG-000001,28.1657989,84.115339,Construction,,,,,,2026-07-23,,,,,TRUE,VALID,v1.1.0/projects.csv,,7,v1.1.0 stable project record,2026-07-26,,VERIFIED
+PRJ-000007,FBL-006,P007,15_narayani_parajuli,15 Narayani Parajuli,,,,ORG-000001,28.1951253,83.9956481,Approval,,,,,,2026-07-23,,,,,TRUE,VALID,v1.1.0/projects.csv,,8,v1.1.0 stable project record,2026-07-26,,VERIFIED
