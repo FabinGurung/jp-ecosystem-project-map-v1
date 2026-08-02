@@ -1,0 +1,6 @@
+component_id,project_id,source_group_id,component_type,component_name,sequence_no,latitude,longitude,status,is_public,remarks
+PCO-000001,PRJ-000011,GRP004,WORK_COMPONENT,Road Works,1,28.2190345,83.9820112,Completed,TRUE,Part of one combined Firke Pool Road and Drain contract
+PCO-000002,PRJ-000011,GRP004,WORK_COMPONENT,Drain Works,2,28.2190345,83.9820112,Completed,TRUE,Part of one combined Firke Pool Road and Drain contract
+PCO-000003,PRJ-000024,GRP023,ROAD_SEGMENT,Bhalam 200 m Road Segment 1,1,28.2634812,83.9952104,Completed,TRUE,One parent project with three road segments
+PCO-000004,PRJ-000024,GRP024,ROAD_SEGMENT,Bhalam 200 m Road Segment 2,2,28.2641125,83.9956842,Completed,TRUE,One parent project with three road segments
+PCO-000005,PRJ-000024,GRP025,ROAD_SEGMENT,Bhalam 200 m Road Segment 3,3,28.2647438,83.9961580,Completed,TRUE,One parent project with three road segments
