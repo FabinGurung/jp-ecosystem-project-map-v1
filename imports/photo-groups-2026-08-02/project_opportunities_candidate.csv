@@ -1,0 +1,2 @@
+opportunity_id,source_group_id,opportunity_name,location_ward_number,project_sector,funding_type,status,latitude,longitude,awarded_company_id,is_public,data_quality_status,data_quality_issue,remarks
+OPP-000001,GRP028,Bachi and Ama Foundation,26,PRIVATE,PRIVATE,NOT_AWARDED,28.2612297,83.9939523,,TRUE,WARNING,Coordinates currently match Bhalam Park Phase 1 and Phase 2 and require verification,Public opportunity record and not an active awarded project
