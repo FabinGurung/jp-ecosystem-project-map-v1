@@ -27,50 +27,54 @@
         </div>
         <div class="metrics" aria-live="polite">
           <div class="metric"><strong id="visible-count">0</strong><span>visible</span></div>
-          <div class="metric"><strong id="public-count">0</strong><span>public</span></div>
+          <div class="metric"><strong id="public-count">0</strong><span>projects</span></div>
           <div class="metric"><strong id="updated-date">—</strong><span>updated</span></div>
         </div>
       </div>
 
       <button class="button filter-toggle" id="filter-toggle" type="button"
-              aria-expanded="false" aria-controls="map-controls">
-        Filters
-      </button>
+              aria-expanded="false" aria-controls="map-controls">Filters</button>
 
       <div class="controls" id="map-controls">
         <div class="control search-control">
-          <label for="search-input">Search project, code, or company</label>
+          <label for="search-input">Search project, code, ward, or company</label>
           <input id="search-input" type="search" autocomplete="off"
-                 placeholder="Example: FBL-001, P002, or Samir">
+                 placeholder="Example: FBL-023, road, Ward 20, or Bhalam">
         </div>
         <div class="control">
           <label for="status-filter">Status</label>
-          <select id="status-filter">
-            <option value="">All statuses</option>
-          </select>
+          <select id="status-filter"><option value="">All statuses</option></select>
+        </div>
+        <div class="control">
+          <label for="sector-filter">Sector</label>
+          <select id="sector-filter"><option value="">All sectors</option></select>
+        </div>
+        <div class="control">
+          <label for="function-filter">Function</label>
+          <select id="function-filter"><option value="">All functions</option></select>
         </div>
         <div class="control">
           <label for="company-filter">Company</label>
-          <select id="company-filter">
-            <option value="">All companies</option>
-          </select>
+          <select id="company-filter"><option value="">All companies</option></select>
         </div>
         <button class="button" id="reset-button" type="button">Reset</button>
         <button class="button" id="list-toggle" type="button"
-                aria-expanded="true" aria-controls="project-pane">
-          Hide list
-        </button>
-        <button class="button button-primary" id="download-button" type="button">
-          Download GeoJSON
-        </button>
+                aria-expanded="true" aria-controls="project-pane">Hide list</button>
+        <button class="button button-primary" id="download-button" type="button">Download GeoJSON</button>
       </div>
     </header>
 
     <main class="workspace" id="workspace">
       <aside class="project-pane" id="project-pane" aria-label="Public project list">
         <div class="public-notice" id="public-notice"></div>
-        <div class="status-legend" id="status-legend" role="group"
-             aria-label="Project status legend"></div>
+        <div class="legend-block">
+          <div class="legend-title">Status colours</div>
+          <div class="status-legend" id="status-legend" role="group" aria-label="Project status legend"></div>
+        </div>
+        <div class="legend-block">
+          <div class="legend-title">Marker functions</div>
+          <div class="function-legend" id="function-legend" role="group" aria-label="Project function marker legend"></div>
+        </div>
         <div class="list-heading">
           <h2>Projects</h2>
           <span id="list-count">0</span>
@@ -81,9 +85,13 @@
       <section class="map-stage" aria-label="Interactive project map">
         <div id="map"></div>
         <div id="map-message" class="map-message" role="alert"></div>
-        <button class="map-list-button" id="map-list-button" type="button">
-          Projects
-        </button>
+        <div class="map-layer-control" aria-label="Map layers">
+          <strong>Map layers</strong>
+          <label><input id="layer-projects" type="checkbox" checked> Projects</label>
+          <label><input id="layer-opportunities" type="checkbox" checked> Opportunities</label>
+          <label><input id="layer-locations" type="checkbox" checked> Offices</label>
+        </div>
+        <button class="map-list-button" id="map-list-button" type="button">Projects</button>
       </section>
 
       <aside class="detail-panel" id="detail-panel" aria-label="Selected project details" inert>
@@ -99,9 +107,7 @@
 
         <div class="detail-tabs" role="tablist" aria-label="Project information sections">
           <button class="detail-tab active" id="tab-overview" type="button" role="tab"
-                  aria-selected="true" aria-controls="panel-overview" data-tab="overview">
-            Overview
-          </button>
+                  aria-selected="true" aria-controls="panel-overview" data-tab="overview">Overview</button>
           <button class="detail-tab" id="tab-works" type="button" role="tab"
                   aria-selected="false" aria-controls="panel-works" data-tab="works">
             Works <span class="tab-count" id="works-tab-count">0</span>
@@ -113,12 +119,9 @@
         </div>
 
         <div class="detail-body">
-          <section class="tab-panel active" id="panel-overview" role="tabpanel"
-                   aria-labelledby="tab-overview"></section>
-          <section class="tab-panel" id="panel-works" role="tabpanel"
-                   aria-labelledby="tab-works" hidden></section>
-          <section class="tab-panel" id="panel-materials" role="tabpanel"
-                   aria-labelledby="tab-materials" hidden></section>
+          <section class="tab-panel active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview"></section>
+          <section class="tab-panel" id="panel-works" role="tabpanel" aria-labelledby="tab-works" hidden></section>
+          <section class="tab-panel" id="panel-materials" role="tabpanel" aria-labelledby="tab-materials" hidden></section>
         </div>
       </aside>
     </main>

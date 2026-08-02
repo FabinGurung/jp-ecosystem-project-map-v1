@@ -290,7 +290,9 @@
     "tooltip_offset": [
       0,
       -8
-    ]
+    ],
+    "label_min_zoom": 14,
+    "overlap_spread_meters": 12
   },
   "features": {
     "show_coordinates": true,
@@ -298,6 +300,86 @@
     "show_public_notice": true,
     "show_financial_progress": false,
     "show_work_costs": false,
-    "show_inventory_quantities": false
+    "show_inventory_quantities": false,
+    "show_opportunities": true,
+    "show_organization_locations": true,
+    "show_project_components": true
+  },
+  "function_styles": {
+    "RESIDENTIAL": {
+      "label": "Residential",
+      "shape": "square",
+      "symbol": "⌂"
+    },
+    "COMMERCIAL": {
+      "label": "Commercial",
+      "shape": "diamond",
+      "symbol": "▦"
+    },
+    "SPORTS": {
+      "label": "Sports",
+      "shape": "circle",
+      "symbol": "●"
+    },
+    "LANDSCAPING": {
+      "label": "Landscaping",
+      "shape": "circle",
+      "symbol": "✦"
+    },
+    "DRAINAGE": {
+      "label": "Drainage",
+      "shape": "triangle",
+      "symbol": "↓"
+    },
+    "ROAD_DRAINAGE": {
+      "label": "Road and Drainage",
+      "shape": "hexagon",
+      "symbol": "⇄"
+    },
+    "ROAD": {
+      "label": "Road",
+      "shape": "pill",
+      "symbol": "↔"
+    },
+    "PUBLIC_BUILDING": {
+      "label": "Public Building",
+      "shape": "square",
+      "symbol": "▣"
+    },
+    "RELIGIOUS": {
+      "label": "Religious",
+      "shape": "triangle",
+      "symbol": "△"
+    },
+    "PAVING": {
+      "label": "Paving",
+      "shape": "diamond",
+      "symbol": "▦"
+    },
+    "AIRPORT": {
+      "label": "Airport",
+      "shape": "hexagon",
+      "symbol": "✈"
+    },
+    "PUBLIC_SANITATION": {
+      "label": "Public Sanitation",
+      "shape": "circle",
+      "symbol": "+"
+    },
+    "RIVER_PROTECTION": {
+      "label": "River Protection",
+      "shape": "hexagon",
+      "symbol": "≋"
+    },
+    "PARK": {
+      "label": "Park",
+      "shape": "circle",
+      "symbol": "♣"
+    },
+    "OTHER": {
+      "label": "Other",
+      "shape": "circle",
+      "symbol": "•"
+    }
   }
 }

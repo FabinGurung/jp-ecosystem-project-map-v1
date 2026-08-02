@@ -40,18 +40,13 @@ export function parseCSV(text) {
   const headers = (rows.shift() || []).map((value) =>
     value.replace(/^\uFEFF/, "").trim()
   );
-
-  if (!headers.length || headers.every((header) => header === "")) {
-    return [];
-  }
+  if (!headers.length || headers.every((header) => header === "")) return [];
 
   return rows
     .filter((values) => values.some((value) => value.trim() !== ""))
-    .map((values) =>
-      Object.fromEntries(
-        headers.map((header, index) => [header, (values[index] || "").trim()])
-      )
-    );
+    .map((values) => Object.fromEntries(
+      headers.map((header, index) => [header, (values[index] || "").trim()])
+    ));
 }
 
 export function parseBoolean(value, fallback = false) {
@@ -62,9 +57,7 @@ export function parseBoolean(value, fallback = false) {
 }
 
 export function parseOptionalNumber(value) {
-  if (value === null || value === undefined || String(value).trim() === "") {
-    return null;
-  }
+  if (value === null || value === undefined || String(value).trim() === "") return null;
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
 }
