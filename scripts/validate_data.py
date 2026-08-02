@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
-"""Validate the public JP Ecosystem v1.2 CSV model.
+"""Validate the public JP Ecosystem v1.2 normalized CSV model.
 
-The validator checks structure, controlled values, primary keys, foreign keys,
-coordinates, dates, numeric values, spreadsheet-error tokens, public-data
-hygiene, and calculations that are explicitly defined. It deliberately does
-not use Factor to calculate BOQ amounts because that business rule is still
-TO_BE_CONFIRMED.
+The validator checks:
+- configuration and required data-file mappings;
+- CSV structure, required headers, duplicate IDs and spreadsheet errors;
+- controlled values, booleans, dates, numbers and coordinates;
+- primary-key and foreign-key relationships across canonical tables;
+- optional legacy project codes for post-v1.1 projects;
+- public-data hygiene and documented data-quality warnings;
+- selected business rules that are already confirmed.
+
+It deliberately does not infer missing engineering, financial, contractor or
+inventory values.
 """
 
 from __future__ import annotations
@@ -16,13 +22,22 @@ import json
 import math
 import re
 import sys
+from collections import Counter
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Mapping, Sequence
 
 
-SPREADSHEET_ERRORS = {"#REF!", "#VALUE!", "#DIV/0!", "#N/A", "#NAME?", "#NUM!"}
+SPREADSHEET_ERRORS = {
+    "#REF!",
+    "#VALUE!",
+    "#DIV/0!",
+    "#N/A",
+    "#NAME?",
+    "#NUM!",
+    "#NULL!",
+}
 TRUE_VALUES = {"true", "1", "yes", "y"}
 FALSE_VALUES = {"false", "0", "no", "n"}
 DATE_FIELDS = {
@@ -68,6 +83,12 @@ PATTERNS = {
     "project_work_id": re.compile(r"^PWI-\d{6}$"),
     "material_id": re.compile(r"^MAT-\d{6}$"),
     "inventory_id": re.compile(r"^PMI-\d{6}$"),
+    "component_id": re.compile(r"^PCO-\d{6}$"),
+    "project_source_link_id": re.compile(r"^PSL-\d{6}$"),
+    "opportunity_id": re.compile(r"^OPP-\d{6}$"),
+    "organization_location_id": re.compile(r"^OLOC-\d{6}$"),
+    "publication_setting_id": re.compile(r"^PPS-\d{6}$"),
+    "source_group_id": re.compile(r"^GRP\d{3}$"),
 }
 
 REQUIRED_HEADERS = {
@@ -77,10 +98,14 @@ REQUIRED_HEADERS = {
         "legacy_project_code",
         "project_name",
         "display_name",
+        "location_ward_number",
         "project_sector",
+        "project_category",
+        "project_function",
         "government_level",
         "implementation_mechanism",
         "executing_company_id",
+        "contractor_verification_status",
         "latitude",
         "longitude",
         "status",
@@ -227,7 +252,78 @@ REQUIRED_HEADERS = {
         "source_reference",
         "verification_status",
     },
+    "project_components": {
+        "component_id",
+        "project_id",
+        "source_group_id",
+        "component_type",
+        "component_name",
+        "sequence_no",
+        "latitude",
+        "longitude",
+        "status",
+        "is_public",
+        "remarks",
+    },
+    "project_source_links": {
+        "project_source_link_id",
+        "source_group_id",
+        "project_id",
+        "source_alias",
+        "link_type",
+        "verification_status",
+        "is_public",
+        "remarks",
+    },
+    "project_opportunities": {
+        "opportunity_id",
+        "source_group_id",
+        "opportunity_name",
+        "location_ward_number",
+        "project_sector",
+        "funding_type",
+        "status",
+        "latitude",
+        "longitude",
+        "awarded_company_id",
+        "is_public",
+        "data_quality_status",
+        "data_quality_issue",
+        "remarks",
+    },
+    "organization_locations": {
+        "organization_location_id",
+        "organization_id",
+        "source_group_id",
+        "location_name",
+        "location_type",
+        "location_ward_number",
+        "latitude",
+        "longitude",
+        "is_public",
+        "data_quality_status",
+        "data_quality_issue",
+        "remarks",
+    },
+    "project_publication_settings": {
+        "publication_setting_id",
+        "project_id",
+        "show_project_name",
+        "show_coordinates",
+        "show_status",
+        "show_ward_number",
+        "show_project_sector",
+        "show_implementation_method",
+        "show_legal_contractor",
+        "show_executing_company_role",
+        "show_general_work_summary",
+        "contract_amount_visibility",
+        "material_quantities_visibility",
+        "remarks",
+    },
 }
+
+EXPECTED_DATASETS = frozenset(REQUIRED_HEADERS)
 
 
 @dataclass(frozen=True)
@@ -272,6 +368,10 @@ def clean(value: object) -> str:
     return str(value or "").strip()
 
 
+def is_true(value: object) -> bool:
+    return clean(value).lower() in TRUE_VALUES
+
+
 def read_csv(
     path: Path, dataset_name: str, result: ValidationResult
 ) -> list[dict[str, str]]:
@@ -279,21 +379,32 @@ def read_csv(
         result.error(path.name, "required data file is missing")
         return []
 
-    with path.open(newline="", encoding="utf-8-sig") as handle:
+    try:
+        handle = path.open(newline="", encoding="utf-8-sig")
+    except (OSError, UnicodeError) as exc:
+        result.error(path.name, f"could not open UTF-8 CSV: {exc}")
+        return []
+
+    with handle:
         reader = csv.DictReader(handle)
         headers = reader.fieldnames or []
         if not headers:
             result.error(path.name, "header row is missing")
             return []
-        if len(headers) != len(set(headers)):
-            duplicates = sorted(
-                {header for header in headers if headers.count(header) > 1}
-            )
-            result.error(path.name, f"duplicate headers: {duplicates}")
+
+        duplicate_headers = sorted(
+            header for header, count in Counter(headers).items() if count > 1
+        )
+        if duplicate_headers:
+            result.error(path.name, f"duplicate headers: {duplicate_headers}")
+
         missing = sorted(REQUIRED_HEADERS[dataset_name] - set(headers))
         if missing:
             result.error(path.name, f"missing required columns: {missing}")
-        forbidden = sorted(FORBIDDEN_PUBLIC_HEADERS & {h.lower() for h in headers})
+
+        forbidden = sorted(
+            FORBIDDEN_PUBLIC_HEADERS & {header.lower() for header in headers}
+        )
         if forbidden:
             result.error(
                 path.name,
@@ -317,7 +428,7 @@ def read_csv(
                     result.error(
                         path.name,
                         f"{field_name} contains spreadsheet error {clean(value)!r}; "
-                        "store a blank numeric value and document the issue instead",
+                        "store a blank value and document the issue instead",
                         line_number,
                     )
 
@@ -334,9 +445,7 @@ def require_fields(
     for line_number, row in enumerate(rows, start=2):
         for field_name in fields:
             if not clean(row.get(field_name)):
-                result.error(
-                    file_name, f"{field_name} is required", line_number
-                )
+                result.error(file_name, f"{field_name} is required", line_number)
 
 
 def validate_unique(
@@ -352,12 +461,29 @@ def validate_unique(
             continue
         if value in seen:
             result.error(
-                file_name,
-                f"duplicate {field_name} {value!r}",
-                line_number,
+                file_name, f"duplicate {field_name} {value!r}", line_number
             )
         seen.add(value)
     return seen
+
+
+def validate_composite_unique(
+    rows: Iterable[dict[str, str]],
+    field_names: Sequence[str],
+    file_name: str,
+    result: ValidationResult,
+) -> None:
+    seen: set[tuple[str, ...]] = set()
+    for line_number, row in enumerate(rows, start=2):
+        values = tuple(clean(row.get(name)) for name in field_names)
+        if any(not value for value in values):
+            continue
+        if values in seen:
+            joined = ", ".join(
+                f"{name}={value!r}" for name, value in zip(field_names, values)
+            )
+            result.error(file_name, f"duplicate relationship ({joined})", line_number)
+        seen.add(values)
 
 
 def validate_pattern(
@@ -378,6 +504,29 @@ def validate_pattern(
             )
 
 
+def validate_delimited_pattern(
+    rows: Iterable[dict[str, str]],
+    field_name: str,
+    pattern_name: str,
+    separator: str,
+    file_name: str,
+    result: ValidationResult,
+) -> None:
+    pattern = PATTERNS[pattern_name]
+    for line_number, row in enumerate(rows, start=2):
+        value = clean(row.get(field_name))
+        if not value:
+            continue
+        parts = [part.strip() for part in value.split(separator)]
+        invalid = [part for part in parts if not pattern.fullmatch(part)]
+        if invalid:
+            result.error(
+                file_name,
+                f"{field_name} contains invalid value(s): {invalid}",
+                line_number,
+            )
+
+
 def validate_boolean(
     rows: Iterable[dict[str, str]],
     field_name: str,
@@ -389,9 +538,7 @@ def validate_boolean(
         value = clean(row.get(field_name)).lower()
         if value and value not in allowed:
             result.error(
-                file_name,
-                f"{field_name} must be TRUE or FALSE",
-                line_number,
+                file_name, f"{field_name} must be TRUE or FALSE", line_number
             )
 
 
@@ -417,7 +564,7 @@ def validate_controlled(
 
 
 def number(
-    row: dict[str, str],
+    row: Mapping[str, str],
     field_name: str,
     file_name: str,
     line_number: int,
@@ -426,12 +573,14 @@ def number(
     minimum: float | None = None,
     maximum: float | None = None,
     allow_blank: bool = True,
+    integer: bool = False,
 ) -> float | None:
     value = clean(row.get(field_name))
     if not value:
         if not allow_blank:
             result.error(file_name, f"{field_name} is required", line_number)
         return None
+
     try:
         parsed = float(value)
     except ValueError:
@@ -439,9 +588,12 @@ def number(
             file_name, f"{field_name} must be a plain numeric value", line_number
         )
         return None
+
     if not math.isfinite(parsed):
         result.error(file_name, f"{field_name} must be finite", line_number)
         return None
+    if integer and not parsed.is_integer():
+        result.error(file_name, f"{field_name} must be a whole number", line_number)
     if minimum is not None and parsed < minimum:
         result.error(
             file_name,
@@ -455,6 +607,36 @@ def number(
             line_number,
         )
     return parsed
+
+
+def validate_coordinates(
+    rows: Iterable[dict[str, str]],
+    file_name: str,
+    result: ValidationResult,
+    *,
+    required: bool = True,
+) -> None:
+    for line_number, row in enumerate(rows, start=2):
+        number(
+            row,
+            "latitude",
+            file_name,
+            line_number,
+            result,
+            minimum=-90,
+            maximum=90,
+            allow_blank=not required,
+        )
+        number(
+            row,
+            "longitude",
+            file_name,
+            line_number,
+            result,
+            minimum=-180,
+            maximum=180,
+            allow_blank=not required,
+        )
 
 
 def validate_dates(
@@ -500,29 +682,20 @@ def validate_quality_issue(
     result: ValidationResult,
 ) -> None:
     for line_number, row in enumerate(rows, start=2):
-        if clean(row.get("data_quality_status")) == "ERROR" and not clean(
-            row.get("data_quality_issue")
-        ):
+        if "data_quality_issue" not in row:
+            continue
+        status = clean(row.get("data_quality_status"))
+        issue = clean(row.get("data_quality_issue"))
+        if status in {"WARNING", "ERROR"} and not issue:
             result.error(
                 file_name,
-                "data_quality_issue is required when data_quality_status is ERROR",
+                "data_quality_issue is required when data_quality_status is "
+                f"{status}",
                 line_number,
             )
 
 
-def validate_repository(root: Path) -> ValidationResult:
-    result = ValidationResult()
-    config_path = root / "map-config.json"
-    if not config_path.exists():
-        result.error("map-config.json", "configuration file is missing")
-        return result
-
-    try:
-        config = json.loads(config_path.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
-        result.error("map-config.json", f"invalid JSON: {exc}")
-        return result
-
+def validate_config(config: dict[str, object], result: ValidationResult) -> bool:
     if config.get("app_version") not in {"1.2.0-dev", "1.2.0"}:
         result.error(
             "map-config.json",
@@ -534,47 +707,120 @@ def validate_repository(root: Path) -> ValidationResult:
             "normalized primary-key migration requires data_schema_version 2.0.0",
         )
 
-    expected_files = {
-        "projects",
-        "organizations",
-        "people",
-        "project_parties",
-        "project_funding",
-        "work_catalog",
-        "project_work_items",
-        "materials_master",
-        "project_material_inventory",
-    }
-    configured_files = config.get("data_files", {})
-    missing_file_keys = sorted(expected_files - set(configured_files))
+    configured_files = config.get("data_files")
+    if not isinstance(configured_files, dict):
+        result.error("map-config.json", "data_files must be an object")
+        return False
+
+    missing_file_keys = sorted(EXPECTED_DATASETS - set(configured_files))
     if missing_file_keys:
         result.error(
             "map-config.json",
             f"data_files is missing keys: {missing_file_keys}",
         )
+        return False
+
+    controls = config.get("controlled_values")
+    if not isinstance(controls, dict):
+        result.error("map-config.json", "controlled_values must be an object")
+        return False
+
+    required_control_keys = {
+        "project_sectors",
+        "project_categories",
+        "project_functions",
+        "implementation_mechanisms",
+        "government_levels",
+        "organization_types",
+        "party_entity_types",
+        "party_roles",
+        "funding_types",
+        "work_statuses",
+        "material_conditions",
+        "component_types",
+        "source_link_types",
+        "opportunity_statuses",
+        "organization_location_types",
+        "publication_visibility_values",
+        "data_quality_statuses",
+        "verification_statuses",
+    }
+    missing_controls = sorted(required_control_keys - set(controls))
+    if missing_controls:
+        result.error(
+            "map-config.json",
+            f"controlled_values is missing keys: {missing_controls}",
+        )
+        return False
+
+    for key in sorted(required_control_keys):
+        values = controls.get(key)
+        if not isinstance(values, list) or not values:
+            result.error(
+                "map-config.json",
+                f"controlled_values.{key} must be a non-empty list",
+            )
+        elif len(values) != len(set(values)):
+            result.error(
+                "map-config.json",
+                f"controlled_values.{key} contains duplicate values",
+            )
+
+    statuses = config.get("status_styles")
+    if not isinstance(statuses, dict) or not statuses:
+        result.error("map-config.json", "status_styles must be a non-empty object")
+
+    return not result.errors
+
+
+def validate_repository(root: Path) -> ValidationResult:
+    result = ValidationResult()
+    config_path = root / "map-config.json"
+    if not config_path.exists():
+        result.error("map-config.json", "configuration file is missing")
         return result
 
+    try:
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError, OSError) as exc:
+        result.error("map-config.json", f"invalid JSON: {exc}")
+        return result
+
+    if not validate_config(config, result):
+        return result
+
+    configured_files = config["data_files"]
+    assert isinstance(configured_files, dict)
     datasets = {
-        name: read_csv(root / configured_files[name], name, result)
-        for name in sorted(expected_files)
+        name: read_csv(root / str(configured_files[name]), name, result)
+        for name in sorted(EXPECTED_DATASETS)
     }
 
-    controls = config.get("controlled_values", {})
+    controls = config["controlled_values"]
+    assert isinstance(controls, dict)
     statuses = set(config.get("status_styles", {}))
-    project_sectors = set(controls.get("project_sectors", []))
-    mechanisms = set(controls.get("implementation_mechanisms", []))
-    government_levels = set(controls.get("government_levels", []))
-    organization_types = set(controls.get("organization_types", []))
-    party_entity_types = set(controls.get("party_entity_types", []))
-    party_roles = set(controls.get("party_roles", []))
-    funding_types = set(controls.get("funding_types", []))
-    work_statuses = set(controls.get("work_statuses", []))
-    material_conditions = set(controls.get("material_conditions", []))
-    quality_statuses = set(controls.get("data_quality_statuses", []))
-    verification_statuses = set(controls.get("verification_statuses", []))
+    project_sectors = set(controls["project_sectors"])
+    project_categories = set(controls["project_categories"])
+    project_functions = set(controls["project_functions"])
+    mechanisms = set(controls["implementation_mechanisms"])
+    government_levels = set(controls["government_levels"])
+    organization_types = set(controls["organization_types"])
+    party_entity_types = set(controls["party_entity_types"])
+    party_roles = set(controls["party_roles"])
+    funding_types = set(controls["funding_types"])
+    work_statuses = set(controls["work_statuses"])
+    material_conditions = set(controls["material_conditions"])
+    component_types = set(controls["component_types"])
+    source_link_types = set(controls["source_link_types"])
+    opportunity_statuses = set(controls["opportunity_statuses"])
+    location_types = set(controls["organization_location_types"])
+    visibility_values = set(controls["publication_visibility_values"])
+    quality_statuses = set(controls["data_quality_statuses"])
+    verification_statuses = set(controls["verification_statuses"])
 
     # Organizations
     organizations = datasets["organizations"]
+    organization_file = str(configured_files["organizations"])
     require_fields(
         organizations,
         {
@@ -586,40 +832,28 @@ def validate_repository(root: Path) -> ValidationResult:
             "is_public",
             "data_quality_status",
         },
-        configured_files["organizations"],
+        organization_file,
         result,
     )
     organization_ids = validate_unique(
-        organizations,
-        "organization_id",
-        configured_files["organizations"],
-        result,
+        organizations, "organization_id", organization_file, result
     )
-    validate_unique(
-        organizations,
-        "organization_code",
-        configured_files["organizations"],
-        result,
-    )
+    validate_unique(organizations, "organization_code", organization_file, result)
     validate_pattern(
-        organizations,
-        "organization_id",
-        "organization_id",
-        configured_files["organizations"],
-        result,
+        organizations, "organization_id", "organization_id", organization_file, result
     )
     validate_controlled(
         organizations,
         "organization_type",
         organization_types,
-        configured_files["organizations"],
+        organization_file,
         result,
     )
     validate_controlled(
         organizations,
         "government_level",
         government_levels,
-        configured_files["organizations"],
+        organization_file,
         result,
         allow_blank=True,
     )
@@ -627,41 +861,72 @@ def validate_repository(root: Path) -> ValidationResult:
         organizations,
         "data_quality_status",
         quality_statuses,
-        configured_files["organizations"],
+        organization_file,
         result,
     )
-    validate_boolean(
-        organizations, "active", configured_files["organizations"], result
-    )
-    validate_boolean(
-        organizations, "is_public", configured_files["organizations"], result
-    )
+    validate_boolean(organizations, "active", organization_file, result)
+    validate_boolean(organizations, "is_public", organization_file, result)
+
+    organization_by_id = {
+        clean(row.get("organization_id")): row for row in organizations
+    }
     for line_number, row in enumerate(organizations, start=2):
+        organization_id = clean(row.get("organization_id"))
         parent_id = clean(row.get("parent_organization_id"))
-        if parent_id and parent_id not in organization_ids:
-            result.error(
-                configured_files["organizations"],
-                f"parent_organization_id {parent_id!r} does not exist",
-                line_number,
-            )
-        if parent_id and parent_id == clean(row.get("organization_id")):
-            result.error(
-                configured_files["organizations"],
-                "organization cannot be its own parent",
-                line_number,
-            )
-        number(
+        organization_type = clean(row.get("organization_type"))
+        government_level = clean(row.get("government_level"))
+        ward_number = number(
             row,
             "ward_number",
-            configured_files["organizations"],
+            organization_file,
             line_number,
             result,
             minimum=1,
             maximum=99,
+            integer=True,
         )
+        if parent_id and parent_id not in organization_ids:
+            result.error(
+                organization_file,
+                f"parent_organization_id {parent_id!r} does not exist",
+                line_number,
+            )
+        if parent_id == organization_id and parent_id:
+            result.error(
+                organization_file,
+                "organization cannot be its own parent",
+                line_number,
+            )
+        if organization_type == "WARD_OFFICE":
+            if not parent_id:
+                result.error(
+                    organization_file,
+                    "WARD_OFFICE requires parent_organization_id",
+                    line_number,
+                )
+            if ward_number is None:
+                result.error(
+                    organization_file,
+                    "WARD_OFFICE requires ward_number",
+                    line_number,
+                )
+            if government_level != "LOCAL":
+                result.error(
+                    organization_file,
+                    "WARD_OFFICE must use government_level LOCAL",
+                    line_number,
+                )
+        if organization_type in {"MUNICIPALITY", "RURAL_MUNICIPALITY"}:
+            if government_level != "LOCAL":
+                result.error(
+                    organization_file,
+                    f"{organization_type} must use government_level LOCAL",
+                    line_number,
+                )
 
-    # People are intentionally allowed to contain zero rows.
+    # People may intentionally contain zero rows.
     people = datasets["people"]
+    people_file = str(configured_files["people"])
     require_fields(
         people,
         {
@@ -671,42 +936,36 @@ def validate_repository(root: Path) -> ValidationResult:
             "is_public",
             "data_quality_status",
         },
-        configured_files["people"],
+        people_file,
         result,
     )
-    person_ids = validate_unique(
-        people, "person_id", configured_files["people"], result
-    )
-    validate_pattern(
-        people,
-        "person_id",
-        "person_id",
-        configured_files["people"],
-        result,
-    )
-    validate_boolean(people, "active", configured_files["people"], result)
-    validate_boolean(people, "is_public", configured_files["people"], result)
+    person_ids = validate_unique(people, "person_id", people_file, result)
+    validate_pattern(people, "person_id", "person_id", people_file, result)
+    validate_boolean(people, "active", people_file, result)
+    validate_boolean(people, "is_public", people_file, result)
     validate_controlled(
-        people,
-        "data_quality_status",
-        quality_statuses,
-        configured_files["people"],
-        result,
+        people, "data_quality_status", quality_statuses, people_file, result
     )
 
     # Projects
     projects = datasets["projects"]
+    projects_file = str(configured_files["projects"])
     if not projects:
-        result.error(configured_files["projects"], "must contain project rows")
+        result.error(projects_file, "must contain project rows")
     require_fields(
         projects,
         {
             "project_id",
             "company_project_code",
-            "legacy_project_code",
             "project_name",
             "display_name",
+            "location_ward_number",
+            "project_sector",
+            "project_category",
+            "project_function",
+            "implementation_mechanism",
             "executing_company_id",
+            "contractor_verification_status",
             "latitude",
             "longitude",
             "status",
@@ -715,109 +974,88 @@ def validate_repository(root: Path) -> ValidationResult:
             "data_quality_status",
             "verification_status",
         },
-        configured_files["projects"],
+        projects_file,
         result,
     )
-    project_ids = validate_unique(
-        projects, "project_id", configured_files["projects"], result
-    )
-    validate_unique(
+    project_ids = validate_unique(projects, "project_id", projects_file, result)
+    validate_unique(projects, "company_project_code", projects_file, result)
+    validate_unique(projects, "legacy_project_code", projects_file, result)
+    validate_pattern(projects, "project_id", "project_id", projects_file, result)
+    validate_pattern(
         projects,
         "company_project_code",
-        configured_files["projects"],
-        result,
-    )
-    validate_unique(
-        projects,
-        "legacy_project_code",
-        configured_files["projects"],
-        result,
-    )
-    for field_name in (
-        "project_id",
         "company_project_code",
+        projects_file,
+        result,
+    )
+    # legacy_project_code is optional for projects created after the v1.1 migration.
+    validate_pattern(
+        projects,
         "legacy_project_code",
-    ):
-        validate_pattern(
-            projects,
-            field_name,
-            field_name,
-            configured_files["projects"],
-            result,
-        )
-    validate_controlled(
-        projects,
-        "status",
-        statuses,
-        configured_files["projects"],
+        "legacy_project_code",
+        projects_file,
         result,
     )
-    validate_controlled(
+    validate_delimited_pattern(
         projects,
-        "project_sector",
-        project_sectors,
-        configured_files["projects"],
+        "source_group_ids",
+        "source_group_id",
+        "|",
+        projects_file,
         result,
+    )
+    validate_controlled(projects, "status", statuses, projects_file, result)
+    validate_controlled(
+        projects, "project_sector", project_sectors, projects_file, result
+    )
+    validate_controlled(
+        projects, "project_category", project_categories, projects_file, result
+    )
+    validate_controlled(
+        projects, "project_function", project_functions, projects_file, result
+    )
+    validate_controlled(
+        projects, "government_level", government_levels, projects_file, result,
         allow_blank=True,
     )
     validate_controlled(
-        projects,
-        "government_level",
-        government_levels,
-        configured_files["projects"],
-        result,
-        allow_blank=True,
+        projects, "implementation_mechanism", mechanisms, projects_file, result
     )
     validate_controlled(
         projects,
-        "implementation_mechanism",
-        mechanisms,
-        configured_files["projects"],
+        "contractor_verification_status",
+        verification_statuses,
+        projects_file,
         result,
-        allow_blank=True,
     )
     validate_controlled(
-        projects,
-        "data_quality_status",
-        quality_statuses,
-        configured_files["projects"],
-        result,
+        projects, "data_quality_status", quality_statuses, projects_file, result
     )
     validate_controlled(
         projects,
         "verification_status",
         verification_statuses,
-        configured_files["projects"],
+        projects_file,
         result,
     )
-    validate_boolean(projects, "is_public", configured_files["projects"], result)
-    validate_dates(projects, configured_files["projects"], result)
+    validate_boolean(projects, "is_public", projects_file, result)
+    validate_dates(projects, projects_file, result)
+    validate_coordinates(projects, projects_file, result, required=True)
 
-    organization_by_id = {
-        clean(row.get("organization_id")): row for row in organizations
-    }
+    project_by_id = {clean(row.get("project_id")): row for row in projects}
     for line_number, row in enumerate(projects, start=2):
-        latitude = number(
+        ward_number = number(
             row,
-            "latitude",
-            configured_files["projects"],
+            "location_ward_number",
+            projects_file,
             line_number,
             result,
-            minimum=-90,
-            maximum=90,
+            minimum=1,
+            maximum=99,
             allow_blank=False,
+            integer=True,
         )
-        longitude = number(
-            row,
-            "longitude",
-            configured_files["projects"],
-            line_number,
-            result,
-            minimum=-180,
-            maximum=180,
-            allow_blank=False,
-        )
-        del latitude, longitude
+        del ward_number
         for field_name in (
             "physical_progress_percent",
             "financial_progress_percent",
@@ -825,7 +1063,7 @@ def validate_repository(root: Path) -> ValidationResult:
             number(
                 row,
                 field_name,
-                configured_files["projects"],
+                projects_file,
                 line_number,
                 result,
                 minimum=0,
@@ -834,18 +1072,18 @@ def validate_repository(root: Path) -> ValidationResult:
 
         company_id = clean(row.get("executing_company_id"))
         company = organization_by_id.get(company_id)
-        if company_id and not company:
+        if not company:
             result.error(
-                configured_files["projects"],
+                projects_file,
                 f"executing_company_id {company_id!r} does not exist",
                 line_number,
             )
-        elif company:
+        else:
             expected_prefix = f"{clean(company.get('organization_code'))}-"
             code = clean(row.get("company_project_code"))
             if code and not code.startswith(expected_prefix):
                 result.error(
-                    configured_files["projects"],
+                    projects_file,
                     f"company_project_code {code!r} must start with "
                     f"{expected_prefix!r} for executing company {company_id}",
                     line_number,
@@ -854,35 +1092,44 @@ def validate_repository(root: Path) -> ValidationResult:
         sector = clean(row.get("project_sector"))
         mechanism = clean(row.get("implementation_mechanism"))
         government_level = clean(row.get("government_level"))
-        if not sector:
-            result.warning(
-                configured_files["projects"],
-                "project_sector is not entered; left blank instead of inventing it",
-                line_number,
-            )
-        if not mechanism:
-            result.warning(
-                configured_files["projects"],
-                "implementation_mechanism is not entered; left blank instead of inventing it",
-                line_number,
-            )
         if mechanism.startswith("GOVERNMENT_") and sector != "GOVERNMENT_PUBLIC":
             result.error(
-                configured_files["projects"],
+                projects_file,
                 "government implementation requires project_sector "
                 "GOVERNMENT_PUBLIC",
                 line_number,
             )
+        if mechanism.startswith("PRIVATE_") and sector != "PRIVATE":
+            result.error(
+                projects_file,
+                "private implementation requires project_sector PRIVATE",
+                line_number,
+            )
+        if sector == "GOVERNMENT_PUBLIC" and not government_level:
+            result.error(
+                projects_file,
+                "government project requires government_level",
+                line_number,
+            )
         if government_level and sector != "GOVERNMENT_PUBLIC":
             result.warning(
-                configured_files["projects"],
+                projects_file,
                 "government_level is populated while project_sector is not "
                 "GOVERNMENT_PUBLIC",
                 line_number,
             )
+        if clean(row.get("status")) == "Completed":
+            progress = clean(row.get("physical_progress_percent"))
+            if progress and not math.isclose(float(progress), 100.0, abs_tol=0.01):
+                result.warning(
+                    projects_file,
+                    "Completed project has physical_progress_percent other than 100",
+                    line_number,
+                )
 
-    # Project-party relationships
+    # Project parties
     project_parties = datasets["project_parties"]
+    parties_file = str(configured_files["project_parties"])
     require_fields(
         project_parties,
         {
@@ -895,62 +1142,46 @@ def validate_repository(root: Path) -> ValidationResult:
             "is_public",
             "data_quality_status",
         },
-        configured_files["project_parties"],
+        parties_file,
         result,
     )
     validate_unique(
-        project_parties,
-        "project_party_id",
-        configured_files["project_parties"],
-        result,
+        project_parties, "project_party_id", parties_file, result
     )
     validate_pattern(
         project_parties,
         "project_party_id",
         "project_party_id",
-        configured_files["project_parties"],
+        parties_file,
         result,
     )
     validate_controlled(
         project_parties,
         "party_entity_type",
         party_entity_types,
-        configured_files["project_parties"],
+        parties_file,
         result,
     )
     validate_controlled(
-        project_parties,
-        "role",
-        party_roles,
-        configured_files["project_parties"],
-        result,
+        project_parties, "role", party_roles, parties_file, result
     )
     validate_controlled(
         project_parties,
         "data_quality_status",
         quality_statuses,
-        configured_files["project_parties"],
+        parties_file,
         result,
     )
-    validate_boolean(
-        project_parties,
-        "is_primary",
-        configured_files["project_parties"],
-        result,
-    )
-    validate_boolean(
-        project_parties,
-        "is_public",
-        configured_files["project_parties"],
-        result,
-    )
-    validate_dates(project_parties, configured_files["project_parties"], result)
-    project_by_id = {clean(row.get("project_id")): row for row in projects}
+    validate_boolean(project_parties, "is_primary", parties_file, result)
+    validate_boolean(project_parties, "is_public", parties_file, result)
+    validate_dates(project_parties, parties_file, result)
+
+    primary_contractors: dict[str, list[str]] = {}
     for line_number, row in enumerate(project_parties, start=2):
         project_id = clean(row.get("project_id"))
         if project_id not in project_ids:
             result.error(
-                configured_files["project_parties"],
+                parties_file,
                 f"project_id {project_id!r} does not exist",
                 line_number,
             )
@@ -958,31 +1189,48 @@ def validate_repository(root: Path) -> ValidationResult:
         party_id = clean(row.get("party_id"))
         if entity_type == "ORGANIZATION" and party_id not in organization_ids:
             result.error(
-                configured_files["project_parties"],
+                parties_file,
                 f"organization party_id {party_id!r} does not exist",
                 line_number,
             )
         if entity_type == "PERSON" and party_id not in person_ids:
             result.error(
-                configured_files["project_parties"],
+                parties_file,
                 f"person party_id {party_id!r} does not exist",
                 line_number,
             )
-        if (
-            clean(row.get("role")) == "CONTRACTOR"
-            and clean(row.get("is_primary")).lower() in TRUE_VALUES
-            and project_id in project_by_id
-            and party_id != clean(project_by_id[project_id].get("executing_company_id"))
+        if clean(row.get("role")) == "CONTRACTOR" and is_true(
+            row.get("is_primary")
         ):
-            result.warning(
-                configured_files["project_parties"],
-                "primary contractor differs from projects.executing_company_id; "
-                "confirm whether both roles are intended",
-                line_number,
+            primary_contractors.setdefault(project_id, []).append(party_id)
+            if (
+                project_id in project_by_id
+                and party_id
+                != clean(project_by_id[project_id].get("executing_company_id"))
+            ):
+                result.warning(
+                    parties_file,
+                    "primary contractor differs from projects.executing_company_id; "
+                    "confirm whether both roles are intended",
+                    line_number,
+                )
+
+    for project_id in sorted(project_ids):
+        contractors = primary_contractors.get(project_id, [])
+        if not contractors:
+            result.error(
+                parties_file,
+                f"{project_id} has no primary contractor relationship",
+            )
+        elif len(contractors) > 1:
+            result.error(
+                parties_file,
+                f"{project_id} has multiple primary contractor relationships",
             )
 
-    # Funding
+    # Project funding
     funding = datasets["project_funding"]
+    funding_file = str(configured_files["project_funding"])
     require_fields(
         funding,
         {
@@ -993,58 +1241,47 @@ def validate_repository(root: Path) -> ValidationResult:
             "is_public",
             "data_quality_status",
         },
-        configured_files["project_funding"],
+        funding_file,
         result,
     )
-    validate_unique(
-        funding,
-        "project_funding_id",
-        configured_files["project_funding"],
-        result,
-    )
+    validate_unique(funding, "project_funding_id", funding_file, result)
     validate_pattern(
         funding,
         "project_funding_id",
         "project_funding_id",
-        configured_files["project_funding"],
+        funding_file,
         result,
     )
+    validate_controlled(funding, "funding_type", funding_types, funding_file, result)
     validate_controlled(
-        funding,
-        "funding_type",
-        funding_types,
-        configured_files["project_funding"],
-        result,
+        funding, "data_quality_status", quality_statuses, funding_file, result
     )
-    validate_controlled(
-        funding,
-        "data_quality_status",
-        quality_statuses,
-        configured_files["project_funding"],
-        result,
-    )
-    validate_boolean(
-        funding, "is_public", configured_files["project_funding"], result
-    )
-    validate_dates(funding, configured_files["project_funding"], result)
+    validate_boolean(funding, "is_public", funding_file, result)
+    validate_dates(funding, funding_file, result)
+
+    funded_project_ids: set[str] = set()
     for line_number, row in enumerate(funding, start=2):
-        if clean(row.get("project_id")) not in project_ids:
+        project_id = clean(row.get("project_id"))
+        funding_party_id = clean(row.get("funding_party_id"))
+        funded_project_ids.add(project_id)
+        if project_id not in project_ids:
             result.error(
-                configured_files["project_funding"],
-                f"project_id {clean(row.get('project_id'))!r} does not exist",
+                funding_file,
+                f"project_id {project_id!r} does not exist",
                 line_number,
             )
-        if clean(row.get("funding_party_id")) not in organization_ids:
+        funder = organization_by_id.get(funding_party_id)
+        if not funder:
             result.error(
-                configured_files["project_funding"],
-                f"funding_party_id {clean(row.get('funding_party_id'))!r} "
-                "does not exist in organizations.csv",
+                funding_file,
+                f"funding_party_id {funding_party_id!r} does not exist in "
+                "organizations.csv",
                 line_number,
             )
         number(
             row,
             "approved_amount_npr",
-            configured_files["project_funding"],
+            funding_file,
             line_number,
             result,
             minimum=0,
@@ -1052,15 +1289,43 @@ def validate_repository(root: Path) -> ValidationResult:
         number(
             row,
             "contribution_percent",
-            configured_files["project_funding"],
+            funding_file,
             line_number,
             result,
             minimum=0,
             maximum=100,
         )
+        if clean(row.get("funding_type")) == "WARD_BUDGET" and funder:
+            if clean(funder.get("organization_type")) != "WARD_OFFICE":
+                result.error(
+                    funding_file,
+                    "WARD_BUDGET funding_party_id must reference a WARD_OFFICE",
+                    line_number,
+                )
+            project = project_by_id.get(project_id)
+            if project and clean(funder.get("ward_number")) != clean(
+                project.get("location_ward_number")
+            ):
+                result.error(
+                    funding_file,
+                    "WARD_BUDGET funder ward_number must match the project's "
+                    "location_ward_number",
+                    line_number,
+                )
+
+    for project_id, project in sorted(project_by_id.items()):
+        if (
+            clean(project.get("project_sector")) == "GOVERNMENT_PUBLIC"
+            and project_id not in funded_project_ids
+        ):
+            result.error(
+                funding_file,
+                f"{project_id} is a government project without a funding relationship",
+            )
 
     # Work catalog
     work_catalog = datasets["work_catalog"]
+    work_file = str(configured_files["work_catalog"])
     require_fields(
         work_catalog,
         {
@@ -1071,41 +1336,21 @@ def validate_repository(root: Path) -> ValidationResult:
             "active",
             "data_quality_status",
         },
-        configured_files["work_catalog"],
+        work_file,
         result,
     )
-    work_ids = validate_unique(
-        work_catalog, "work_id", configured_files["work_catalog"], result
-    )
-    validate_unique(
-        work_catalog, "work_code", configured_files["work_catalog"], result
-    )
-    validate_pattern(
-        work_catalog,
-        "work_id",
-        "work_id",
-        configured_files["work_catalog"],
-        result,
-    )
-    validate_boolean(
-        work_catalog, "active", configured_files["work_catalog"], result
-    )
-    validate_units(
-        work_catalog,
-        "default_unit",
-        configured_files["work_catalog"],
-        result,
-    )
+    work_ids = validate_unique(work_catalog, "work_id", work_file, result)
+    validate_unique(work_catalog, "work_code", work_file, result)
+    validate_pattern(work_catalog, "work_id", "work_id", work_file, result)
+    validate_boolean(work_catalog, "active", work_file, result)
+    validate_units(work_catalog, "default_unit", work_file, result)
     validate_controlled(
-        work_catalog,
-        "data_quality_status",
-        quality_statuses,
-        configured_files["work_catalog"],
-        result,
+        work_catalog, "data_quality_status", quality_statuses, work_file, result
     )
 
     # Project work items
     work_items = datasets["project_work_items"]
+    work_items_file = str(configured_files["project_work_items"])
     require_fields(
         work_items,
         {
@@ -1117,72 +1362,64 @@ def validate_repository(root: Path) -> ValidationResult:
             "data_quality_status",
             "verification_status",
         },
-        configured_files["project_work_items"],
+        work_items_file,
         result,
     )
-    validate_unique(
-        work_items,
-        "project_work_id",
-        configured_files["project_work_items"],
-        result,
-    )
+    validate_unique(work_items, "project_work_id", work_items_file, result)
     validate_pattern(
         work_items,
         "project_work_id",
         "project_work_id",
-        configured_files["project_work_items"],
+        work_items_file,
+        result,
+    )
+    validate_pattern(
+        work_items,
+        "source_group_id",
+        "source_group_id",
+        work_items_file,
         result,
     )
     validate_controlled(
-        work_items,
-        "work_status",
-        work_statuses,
-        configured_files["project_work_items"],
-        result,
+        work_items, "work_status", work_statuses, work_items_file, result
     )
     validate_controlled(
         work_items,
         "data_quality_status",
         quality_statuses,
-        configured_files["project_work_items"],
+        work_items_file,
         result,
     )
     validate_controlled(
         work_items,
         "verification_status",
         verification_statuses,
-        configured_files["project_work_items"],
+        work_items_file,
         result,
     )
-    validate_boolean(
-        work_items, "is_public", configured_files["project_work_items"], result
-    )
-    validate_units(
-        work_items, "unit", configured_files["project_work_items"], result
-    )
-    validate_dates(work_items, configured_files["project_work_items"], result)
-    validate_quality_issue(
-        work_items, configured_files["project_work_items"], result
-    )
+    validate_boolean(work_items, "is_public", work_items_file, result)
+    validate_units(work_items, "unit", work_items_file, result)
+    validate_dates(work_items, work_items_file, result)
+    validate_quality_issue(work_items, work_items_file, result)
+
     for line_number, row in enumerate(work_items, start=2):
         if clean(row.get("project_id")) not in project_ids:
             result.error(
-                configured_files["project_work_items"],
+                work_items_file,
                 f"project_id {clean(row.get('project_id'))!r} does not exist",
                 line_number,
             )
         if clean(row.get("work_id")) not in work_ids:
             result.error(
-                configured_files["project_work_items"],
+                work_items_file,
                 f"work_id {clean(row.get('work_id'))!r} does not exist",
                 line_number,
             )
-
         values = {
             field_name: number(
                 row,
                 field_name,
-                configured_files["project_work_items"],
+                work_items_file,
                 line_number,
                 result,
                 minimum=0,
@@ -1204,9 +1441,11 @@ def validate_repository(root: Path) -> ValidationResult:
         remaining = values["remaining_quantity"]
         progress = values["progress_percent"]
         factor = values["factor"]
-        if factor is not None and clean(row.get("factor_definition")) != "TO_BE_CONFIRMED":
+        if factor is not None and clean(
+            row.get("factor_definition")
+        ) != "TO_BE_CONFIRMED":
             result.error(
-                configured_files["project_work_items"],
+                work_items_file,
                 "a preserved Factor must use factor_definition TO_BE_CONFIRMED "
                 "until its business meaning is verified",
                 line_number,
@@ -1220,7 +1459,7 @@ def validate_repository(root: Path) -> ValidationResult:
             )
         ):
             result.error(
-                configured_files["project_work_items"],
+                work_items_file,
                 "remaining_quantity must equal planned_quantity - "
                 "completed_quantity",
                 line_number,
@@ -1228,7 +1467,7 @@ def validate_repository(root: Path) -> ValidationResult:
         if progress is not None:
             if planned is None or planned <= 0:
                 result.error(
-                    configured_files["project_work_items"],
+                    work_items_file,
                     "progress_percent cannot be calculated without a positive "
                     "planned_quantity",
                     line_number,
@@ -1239,14 +1478,15 @@ def validate_repository(root: Path) -> ValidationResult:
                     progress, expected, rel_tol=1e-6, abs_tol=0.01
                 ):
                     result.error(
-                        configured_files["project_work_items"],
+                        work_items_file,
                         "progress_percent must equal completed_quantity / "
                         "planned_quantity × 100",
                         line_number,
                     )
 
-    # Material master
+    # Materials
     materials = datasets["materials_master"]
+    materials_file = str(configured_files["materials_master"])
     require_fields(
         materials,
         {
@@ -1258,47 +1498,23 @@ def validate_repository(root: Path) -> ValidationResult:
             "active",
             "data_quality_status",
         },
-        configured_files["materials_master"],
+        materials_file,
         result,
     )
     material_ids = validate_unique(
-        materials,
-        "material_id",
-        configured_files["materials_master"],
-        result,
+        materials, "material_id", materials_file, result
     )
-    validate_unique(
-        materials,
-        "material_code",
-        configured_files["materials_master"],
-        result,
-    )
-    validate_pattern(
-        materials,
-        "material_id",
-        "material_id",
-        configured_files["materials_master"],
-        result,
-    )
-    validate_boolean(
-        materials, "active", configured_files["materials_master"], result
-    )
-    validate_units(
-        materials,
-        "default_unit",
-        configured_files["materials_master"],
-        result,
-    )
+    validate_unique(materials, "material_code", materials_file, result)
+    validate_pattern(materials, "material_id", "material_id", materials_file, result)
+    validate_boolean(materials, "active", materials_file, result)
+    validate_units(materials, "default_unit", materials_file, result)
     validate_controlled(
-        materials,
-        "data_quality_status",
-        quality_statuses,
-        configured_files["materials_master"],
-        result,
+        materials, "data_quality_status", quality_statuses, materials_file, result
     )
 
-    # Material inventory snapshots
+    # Material inventory
     inventory = datasets["project_material_inventory"]
+    inventory_file = str(configured_files["project_material_inventory"])
     require_fields(
         inventory,
         {
@@ -1314,71 +1530,39 @@ def validate_repository(root: Path) -> ValidationResult:
             "data_quality_status",
             "verification_status",
         },
-        configured_files["project_material_inventory"],
+        inventory_file,
         result,
     )
-    validate_unique(
-        inventory,
-        "inventory_id",
-        configured_files["project_material_inventory"],
-        result,
-    )
-    validate_pattern(
-        inventory,
-        "inventory_id",
-        "inventory_id",
-        configured_files["project_material_inventory"],
-        result,
+    validate_unique(inventory, "inventory_id", inventory_file, result)
+    validate_pattern(inventory, "inventory_id", "inventory_id", inventory_file, result)
+    validate_controlled(
+        inventory, "condition", material_conditions, inventory_file, result
     )
     validate_controlled(
-        inventory,
-        "condition",
-        material_conditions,
-        configured_files["project_material_inventory"],
-        result,
-    )
-    validate_controlled(
-        inventory,
-        "data_quality_status",
-        quality_statuses,
-        configured_files["project_material_inventory"],
-        result,
+        inventory, "data_quality_status", quality_statuses, inventory_file, result
     )
     validate_controlled(
         inventory,
         "verification_status",
         verification_statuses,
-        configured_files["project_material_inventory"],
+        inventory_file,
         result,
     )
-    validate_boolean(
-        inventory,
-        "is_public",
-        configured_files["project_material_inventory"],
-        result,
-    )
-    validate_units(
-        inventory,
-        "unit",
-        configured_files["project_material_inventory"],
-        result,
-    )
-    validate_dates(
-        inventory, configured_files["project_material_inventory"], result
-    )
-    validate_quality_issue(
-        inventory, configured_files["project_material_inventory"], result
-    )
+    validate_boolean(inventory, "is_public", inventory_file, result)
+    validate_units(inventory, "unit", inventory_file, result)
+    validate_dates(inventory, inventory_file, result)
+    validate_quality_issue(inventory, inventory_file, result)
+
     for line_number, row in enumerate(inventory, start=2):
         if clean(row.get("project_id")) not in project_ids:
             result.error(
-                configured_files["project_material_inventory"],
+                inventory_file,
                 f"project_id {clean(row.get('project_id'))!r} does not exist",
                 line_number,
             )
         if clean(row.get("material_id")) not in material_ids:
             result.error(
-                configured_files["project_material_inventory"],
+                inventory_file,
                 f"material_id {clean(row.get('material_id'))!r} does not exist",
                 line_number,
             )
@@ -1386,7 +1570,7 @@ def validate_repository(root: Path) -> ValidationResult:
             field_name: number(
                 row,
                 field_name,
-                configured_files["project_material_inventory"],
+                inventory_file,
                 line_number,
                 result,
                 minimum=0,
@@ -1409,11 +1593,352 @@ def validate_repository(root: Path) -> ValidationResult:
             )
         ):
             result.warning(
-                configured_files["project_material_inventory"],
+                inventory_file,
                 "available_quantity differs from quantity_on_site - "
                 "reserved_quantity; confirm the snapshot",
                 line_number,
             )
+
+    # Project components
+    components = datasets["project_components"]
+    components_file = str(configured_files["project_components"])
+    require_fields(
+        components,
+        {
+            "component_id",
+            "project_id",
+            "component_type",
+            "component_name",
+            "sequence_no",
+            "latitude",
+            "longitude",
+            "status",
+            "is_public",
+        },
+        components_file,
+        result,
+    )
+    validate_unique(components, "component_id", components_file, result)
+    validate_composite_unique(
+        components, ("project_id", "sequence_no"), components_file, result
+    )
+    validate_pattern(
+        components, "component_id", "component_id", components_file, result
+    )
+    validate_pattern(
+        components, "source_group_id", "source_group_id", components_file, result
+    )
+    validate_controlled(
+        components, "component_type", component_types, components_file, result
+    )
+    validate_controlled(components, "status", statuses, components_file, result)
+    validate_boolean(components, "is_public", components_file, result)
+    validate_coordinates(components, components_file, result, required=True)
+
+    for line_number, row in enumerate(components, start=2):
+        if clean(row.get("project_id")) not in project_ids:
+            result.error(
+                components_file,
+                f"project_id {clean(row.get('project_id'))!r} does not exist",
+                line_number,
+            )
+        number(
+            row,
+            "sequence_no",
+            components_file,
+            line_number,
+            result,
+            minimum=1,
+            allow_blank=False,
+            integer=True,
+        )
+
+    # Source links
+    source_links = datasets["project_source_links"]
+    source_links_file = str(configured_files["project_source_links"])
+    require_fields(
+        source_links,
+        {
+            "project_source_link_id",
+            "source_group_id",
+            "project_id",
+            "source_alias",
+            "link_type",
+            "verification_status",
+            "is_public",
+        },
+        source_links_file,
+        result,
+    )
+    validate_unique(
+        source_links, "project_source_link_id", source_links_file, result
+    )
+    validate_unique(source_links, "source_group_id", source_links_file, result)
+    validate_pattern(
+        source_links,
+        "project_source_link_id",
+        "project_source_link_id",
+        source_links_file,
+        result,
+    )
+    validate_pattern(
+        source_links,
+        "source_group_id",
+        "source_group_id",
+        source_links_file,
+        result,
+    )
+    validate_controlled(
+        source_links, "link_type", source_link_types, source_links_file, result
+    )
+    validate_controlled(
+        source_links,
+        "verification_status",
+        verification_statuses,
+        source_links_file,
+        result,
+    )
+    validate_boolean(source_links, "is_public", source_links_file, result)
+    for line_number, row in enumerate(source_links, start=2):
+        if clean(row.get("project_id")) not in project_ids:
+            result.error(
+                source_links_file,
+                f"project_id {clean(row.get('project_id'))!r} does not exist",
+                line_number,
+            )
+
+    # Opportunities
+    opportunities = datasets["project_opportunities"]
+    opportunities_file = str(configured_files["project_opportunities"])
+    require_fields(
+        opportunities,
+        {
+            "opportunity_id",
+            "source_group_id",
+            "opportunity_name",
+            "location_ward_number",
+            "project_sector",
+            "funding_type",
+            "status",
+            "latitude",
+            "longitude",
+            "is_public",
+            "data_quality_status",
+        },
+        opportunities_file,
+        result,
+    )
+    validate_unique(opportunities, "opportunity_id", opportunities_file, result)
+    validate_unique(opportunities, "source_group_id", opportunities_file, result)
+    validate_pattern(
+        opportunities, "opportunity_id", "opportunity_id", opportunities_file, result
+    )
+    validate_pattern(
+        opportunities,
+        "source_group_id",
+        "source_group_id",
+        opportunities_file,
+        result,
+    )
+    validate_controlled(
+        opportunities,
+        "project_sector",
+        project_sectors,
+        opportunities_file,
+        result,
+    )
+    validate_controlled(
+        opportunities, "funding_type", funding_types, opportunities_file, result
+    )
+    validate_controlled(
+        opportunities, "status", opportunity_statuses, opportunities_file, result
+    )
+    validate_controlled(
+        opportunities,
+        "data_quality_status",
+        quality_statuses,
+        opportunities_file,
+        result,
+    )
+    validate_boolean(opportunities, "is_public", opportunities_file, result)
+    validate_coordinates(opportunities, opportunities_file, result, required=True)
+    validate_quality_issue(opportunities, opportunities_file, result)
+    for line_number, row in enumerate(opportunities, start=2):
+        number(
+            row,
+            "location_ward_number",
+            opportunities_file,
+            line_number,
+            result,
+            minimum=1,
+            maximum=99,
+            allow_blank=False,
+            integer=True,
+        )
+        awarded_company_id = clean(row.get("awarded_company_id"))
+        status = clean(row.get("status"))
+        if awarded_company_id and awarded_company_id not in organization_ids:
+            result.error(
+                opportunities_file,
+                f"awarded_company_id {awarded_company_id!r} does not exist",
+                line_number,
+            )
+        if status == "NOT_AWARDED" and awarded_company_id:
+            result.error(
+                opportunities_file,
+                "NOT_AWARDED opportunity must not contain awarded_company_id",
+                line_number,
+            )
+        if status == "AWARDED" and not awarded_company_id:
+            result.error(
+                opportunities_file,
+                "AWARDED opportunity requires awarded_company_id",
+                line_number,
+            )
+
+    # Organization locations
+    locations = datasets["organization_locations"]
+    locations_file = str(configured_files["organization_locations"])
+    require_fields(
+        locations,
+        {
+            "organization_location_id",
+            "organization_id",
+            "location_name",
+            "location_type",
+            "location_ward_number",
+            "latitude",
+            "longitude",
+            "is_public",
+            "data_quality_status",
+        },
+        locations_file,
+        result,
+    )
+    validate_unique(
+        locations, "organization_location_id", locations_file, result
+    )
+    validate_pattern(
+        locations,
+        "organization_location_id",
+        "organization_location_id",
+        locations_file,
+        result,
+    )
+    validate_pattern(
+        locations, "source_group_id", "source_group_id", locations_file, result
+    )
+    validate_controlled(
+        locations, "location_type", location_types, locations_file, result
+    )
+    validate_controlled(
+        locations,
+        "data_quality_status",
+        quality_statuses,
+        locations_file,
+        result,
+    )
+    validate_boolean(locations, "is_public", locations_file, result)
+    validate_coordinates(locations, locations_file, result, required=True)
+    validate_quality_issue(locations, locations_file, result)
+    for line_number, row in enumerate(locations, start=2):
+        organization_id = clean(row.get("organization_id"))
+        if organization_id not in organization_ids:
+            result.error(
+                locations_file,
+                f"organization_id {organization_id!r} does not exist",
+                line_number,
+            )
+        number(
+            row,
+            "location_ward_number",
+            locations_file,
+            line_number,
+            result,
+            minimum=1,
+            maximum=99,
+            allow_blank=False,
+            integer=True,
+        )
+
+    # Publication settings
+    publication = datasets["project_publication_settings"]
+    publication_file = str(configured_files["project_publication_settings"])
+    boolean_fields = {
+        "show_project_name",
+        "show_coordinates",
+        "show_status",
+        "show_ward_number",
+        "show_project_sector",
+        "show_implementation_method",
+        "show_legal_contractor",
+        "show_executing_company_role",
+        "show_general_work_summary",
+    }
+    require_fields(
+        publication,
+        {
+            "publication_setting_id",
+            "project_id",
+            *boolean_fields,
+            "contract_amount_visibility",
+            "material_quantities_visibility",
+        },
+        publication_file,
+        result,
+    )
+    validate_unique(
+        publication, "publication_setting_id", publication_file, result
+    )
+    publication_project_ids = validate_unique(
+        publication, "project_id", publication_file, result
+    )
+    validate_pattern(
+        publication,
+        "publication_setting_id",
+        "publication_setting_id",
+        publication_file,
+        result,
+    )
+    for field_name in sorted(boolean_fields):
+        validate_boolean(publication, field_name, publication_file, result)
+    validate_controlled(
+        publication,
+        "contract_amount_visibility",
+        visibility_values,
+        publication_file,
+        result,
+    )
+    validate_controlled(
+        publication,
+        "material_quantities_visibility",
+        visibility_values,
+        publication_file,
+        result,
+    )
+    for line_number, row in enumerate(publication, start=2):
+        project_id = clean(row.get("project_id"))
+        if project_id not in project_ids:
+            result.error(
+                publication_file,
+                f"project_id {project_id!r} does not exist",
+                line_number,
+            )
+
+    missing_publication = sorted(project_ids - publication_project_ids)
+    extra_publication = sorted(publication_project_ids - project_ids)
+    if missing_publication:
+        result.error(
+            publication_file,
+            "missing publication settings for project IDs: "
+            f"{missing_publication}",
+        )
+    if extra_publication:
+        result.error(
+            publication_file,
+            "publication settings reference unknown project IDs: "
+            f"{extra_publication}",
+        )
 
     return result
 
