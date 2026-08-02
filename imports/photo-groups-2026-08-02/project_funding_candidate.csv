@@ -1,19 +1,19 @@
-project_funding_id,project_id,funding_party_id,funding_type,approved_amount_npr,contribution_percent,funding_date,remarks,is_public,data_quality_status,source_file,source_sheet,source_row,source_reference
-PFU-000001,PRJ-000008,ORG-000004,WARD_BUDGET,,,,Ward No. 4 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000002,PRJ-000009,ORG-000004,WARD_BUDGET,,,,Ward No. 4 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000003,PRJ-000010,ORG-000004,WARD_BUDGET,,,,Ward No. 4 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000004,PRJ-000011,ORG-000004,WARD_BUDGET,,,,Ward No. 4 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000005,PRJ-000012,ORG-000004,WARD_BUDGET,,,,Ward No. 4 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000006,PRJ-000013,ORG-000005,WARD_BUDGET,,,,Ward No. 5 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000007,PRJ-000014,ORG-000005,WARD_BUDGET,,,,Ward No. 5 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000008,PRJ-000015,ORG-000005,WARD_BUDGET,,,,Ward No. 5 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000009,PRJ-000016,ORG-000006,WARD_BUDGET,,,,Ward No. 6 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000010,PRJ-000018,ORG-000007,WARD_BUDGET,,,,Ward No. 9 budget funding for User Committee project,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000011,PRJ-000021,ORG-000008,WARD_BUDGET,,,,Ward No. 14 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000012,PRJ-000022,ORG-000008,WARD_BUDGET,,,,Ward No. 14 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000013,PRJ-000023,ORG-000009,WARD_BUDGET,,,,Ward No. 20 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000014,PRJ-000024,ORG-000009,WARD_BUDGET,,,,Ward No. 20 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000015,PRJ-000025,ORG-000009,WARD_BUDGET,,,,Ward No. 20 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000016,PRJ-000026,ORG-000009,WARD_BUDGET,,,,Ward No. 20 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000017,PRJ-000027,ORG-000009,WARD_BUDGET,,,,Ward No. 20 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
-PFU-000018,PRJ-000028,ORG-000009,WARD_BUDGET,,,,Ward No. 20 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+﻿project_funding_id,project_id,funding_party_id,funding_type,approved_amount_npr,contribution_percent,funding_date,remarks,is_public,data_quality_status,source_file,source_sheet,source_row,source_reference
+PFD-000001,PRJ-000008,ORG-000004,WARD_BUDGET,,,,Ward No. 4 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000002,PRJ-000009,ORG-000004,WARD_BUDGET,,,,Ward No. 4 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000003,PRJ-000010,ORG-000004,WARD_BUDGET,,,,Ward No. 4 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000004,PRJ-000011,ORG-000004,WARD_BUDGET,,,,Ward No. 4 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000005,PRJ-000012,ORG-000004,WARD_BUDGET,,,,Ward No. 4 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000006,PRJ-000013,ORG-000005,WARD_BUDGET,,,,Ward No. 5 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000007,PRJ-000014,ORG-000005,WARD_BUDGET,,,,Ward No. 5 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000008,PRJ-000015,ORG-000005,WARD_BUDGET,,,,Ward No. 5 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000009,PRJ-000016,ORG-000006,WARD_BUDGET,,,,Ward No. 6 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000010,PRJ-000018,ORG-000007,WARD_BUDGET,,,,Ward No. 9 budget funding for User Committee project,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000011,PRJ-000021,ORG-000008,WARD_BUDGET,,,,Ward No. 14 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000012,PRJ-000022,ORG-000008,WARD_BUDGET,,,,Ward No. 14 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000013,PRJ-000023,ORG-000009,WARD_BUDGET,,,,Ward No. 20 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000014,PRJ-000024,ORG-000009,WARD_BUDGET,,,,Ward No. 20 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000015,PRJ-000025,ORG-000009,WARD_BUDGET,,,,Ward No. 20 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000016,PRJ-000026,ORG-000009,WARD_BUDGET,,,,Ward No. 20 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000017,PRJ-000027,ORG-000009,WARD_BUDGET,,,,Ward No. 20 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
+PFD-000018,PRJ-000028,ORG-000009,WARD_BUDGET,,,,Ward No. 20 budget funding,TRUE,VALID,imports/photo-groups-2026-08-02/source_groups_resolved.csv,,,User-confirmed ward budget
