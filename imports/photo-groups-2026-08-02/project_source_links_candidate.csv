@@ -1,0 +1,5 @@
+project_source_link_id,source_group_id,project_id,source_alias,link_type,verification_status,is_public,remarks
+PSL-000001,GRP014,PRJ-000005,Suke Plain,SOURCE_ALIAS,VERIFIED,TRUE,Same project as FBL-004 30 Sabitri Giri / Dipti Giri
+PSL-000002,GRP016,PRJ-000003,Hari Baral,SOURCE_MATCH,VERIFIED,TRUE,Same project as FBL-002
+PSL-000003,GRP020,PRJ-000007,Narayani Parajuli,SOURCE_MATCH,VERIFIED,TRUE,Same project as FBL-006
+PSL-000004,GRP021,PRJ-000004,Yamuna Pun Adai,SOURCE_MATCH,VERIFIED,TRUE,Same project as FBL-003
