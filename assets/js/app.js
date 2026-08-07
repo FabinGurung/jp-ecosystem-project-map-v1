@@ -524,7 +524,7 @@ function renderMapMarkers({ fitBounds = false } = {}) {
     });
   }
   renderSupplementalMarkers(bounds);
-  if (state.activeProjectId) renderSelectedComponents(state.activeProjectId);
+  renderSelectedComponents(state.activeProjectId);
   if (fitBounds && bounds.length) {
     state.map.invalidateSize({ pan: false });
     state.map.fitBounds(bounds, { padding: [state.config.fit_bounds_padding, state.config.fit_bounds_padding], maxZoom: 15 });
@@ -714,10 +714,60 @@ function setActiveTab(tabName) {
 function renderSelectedComponents(projectId) {
   state.componentLayer.clearLayers();
   if (!elements.layerProjects.checked || state.config.features.show_project_components === false) return;
-  const components = (state.componentsByProjectId.get(projectId) || []).filter((c) => c.is_public && c.latitude !== null && c.longitude !== null);
-  const positions = components.map((component, index) => offsetCoordinate(component.latitude, component.longitude, index, components.length, 7));
-  components.forEach((component, index) => {
-    L.circleMarker(positions[index], { radius: 6, color: "#172033", weight: 2, fillColor: "#ffffff", fillOpacity: 0.95, dashArray: "3 2" })
+
+  const visibleProjectIds = new Set(state.filteredProjects.map((project) => project.project_id));
+  const roadSegments = state.projectComponents.filter((component) =>
+    component.is_public
+    && component.component_type === "ROAD_SEGMENT"
+    && component.latitude !== null
+    && component.longitude !== null
+    && visibleProjectIds.has(component.project_id)
+  );
+
+  roadSegments.forEach((component) => {
+    const parent = state.projects.find((project) => project.project_id === component.project_id);
+    const overlapsParent = parent
+      && pointKey(component.latitude, component.longitude) === pointKey(parent.latitude, parent.longitude);
+    const position = overlapsParent
+      ? offsetCoordinate(component.latitude, component.longitude, 1, 2, 9)
+      : [component.latitude, component.longitude];
+    const parentCode = parent?.company_project_code || component.project_id;
+    const partLabel = component.sequence_no ? `Part ${component.sequence_no}` : "Road segment";
+
+    L.circleMarker(position, {
+      radius: 7,
+      color: "#172033",
+      weight: 2,
+      fillColor: "#ffffff",
+      fillOpacity: 0.98,
+      dashArray: "3 2",
+    })
+      .bindTooltip(`${parentCode} · ${partLabel}`, { direction: "top", permanent: true, opacity: 0.95 })
+      .bindPopup(`<div class="popup"><div class="popup-code">${escapeHTML(parentCode)} · ${escapeHTML(partLabel)}</div><h3>${escapeHTML(component.component_name)}</h3><div class="popup-status">${escapeHTML(parent?.display_name || "")}${component.status ? ` · ${escapeHTML(component.status)}` : ""}</div><div class="popup-actions"><a href="${directionsURL(component)}" target="_blank" rel="noopener">Directions</a></div></div>`)
+      .addTo(state.componentLayer);
+  });
+
+  const selectedComponents = projectId
+    ? (state.componentsByProjectId.get(projectId) || []).filter((component) =>
+        component.is_public
+        && component.component_type !== "ROAD_SEGMENT"
+        && component.latitude !== null
+        && component.longitude !== null
+      )
+    : [];
+  const positions = selectedComponents.map((component, index) =>
+    offsetCoordinate(component.latitude, component.longitude, index, selectedComponents.length, 7)
+  );
+
+  selectedComponents.forEach((component, index) => {
+    L.circleMarker(positions[index], {
+      radius: 6,
+      color: "#172033",
+      weight: 2,
+      fillColor: "#ffffff",
+      fillOpacity: 0.95,
+      dashArray: "3 2",
+    })
       .bindTooltip(component.component_name, { direction: "top" })
       .bindPopup(`<div class="popup"><div class="popup-code">${escapeHTML(humanLabel(component.component_type))}</div><h3>${escapeHTML(component.component_name)}</h3><div class="popup-status">${escapeHTML(component.status || "")}</div></div>`)
       .addTo(state.componentLayer);
@@ -768,7 +818,9 @@ function selectProject(projectId, { pan = true, openPopup = true, updateLocation
 function closeProjectDetail() {
   elements.workspace.classList.remove("detail-open");
   elements.detailPanel.inert = true;
-  state.componentLayer?.clearLayers();
+  state.activeProjectId = null;
+  renderProjectList();
+  renderSelectedComponents("");
   updateHash("");
   refreshMapSoon();
 }

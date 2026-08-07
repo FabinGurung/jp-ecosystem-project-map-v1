@@ -1,0 +1,3 @@
+correction_id,entity_type,entity_id,entity_name,old_latitude,old_longitude,new_latitude,new_longitude,coordinate_verification_status,coordinate_verified_by,coordinate_verified_at,notes
+SLC-000001,PROJECT_OPPORTUNITY,OPP-000001,Bachi and Ama Foundation,28.2612297,83.9939523,28.181302,84.033216,VERIFIED,Fabin Gurung,2026-08-07,"Coordinate verification applies only to latitude and longitude; it does not verify award status, funding, classification, or the complete opportunity record."
+SLC-000002,ORGANIZATION_LOCATION,OLOC-000001,Fishtail Builders Office,28.2612297,83.9939523,28.225246,83.987354,VERIFIED,Fabin Gurung,2026-08-07,Coordinate verification applies only to the office latitude and longitude; it does not verify other organization attributes.

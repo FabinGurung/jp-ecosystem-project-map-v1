@@ -1,2 +1,2 @@
 organization_location_id,organization_id,source_group_id,location_name,location_type,location_ward_number,latitude,longitude,is_public,data_quality_status,data_quality_issue,remarks
-OLOC-000001,ORG-000001,GRP006,Fishtail Builders Office,OFFICE,4,28.2612297,83.9939523,TRUE,WARNING,The supplied location matches Bhalam Park Phase 1 Phase 2 and Bachi and Ama Foundation while the source group indicates Ward 4,Latest user-supplied coordinate retained temporarily; original raw coordinate was 28.2193210 83.9823105
+OLOC-000001,ORG-000001,GRP006,Fishtail Builders Office,OFFICE,4,28.225246,83.987354,TRUE,VALID,,Office coordinate corrected from user-verified location on 2026-08-07; prior provisional coordinate replaced
