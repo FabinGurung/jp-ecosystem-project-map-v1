@@ -6,6 +6,7 @@ on:
       - main
       - v1.2-operational-map
       - v1.2-project-data-integration
+      - v1.2-site-operations-dashboard
     paths:
       - "*.csv"
       - "map-config.json"
@@ -15,6 +16,7 @@ on:
       - "scripts/**"
       - "tests/**"
       - ".github/workflows/validate-projects.yml"
+
   pull_request:
     paths:
       - "*.csv"
@@ -32,6 +34,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -51,6 +54,7 @@ jobs:
         run: |
           node --check assets/js/csv.js
           node --check assets/js/app.js
+          node --check assets/js/site-operations-prototype.js
 
       - name: Run JavaScript CSV tests
         run: node --test tests/*.test.mjs
