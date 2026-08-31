@@ -195,12 +195,11 @@ async function loadM01() {
 }
 
 function initializeM01() {
-  const targets = [
-    document.getElementById("detail-code"),
-    document.getElementById("panel-works"),
-  ].filter(Boolean);
-  const observer = new MutationObserver(queueRender);
-  targets.forEach((target) => observer.observe(target, { childList: true, subtree: true, characterData: true }));
+  const detailCode = document.getElementById("detail-code");
+  if (detailCode) {
+    const observer = new MutationObserver(queueRender);
+    observer.observe(detailCode, { childList: true, subtree: true, characterData: true });
+  }
   loadM01();
 }
 

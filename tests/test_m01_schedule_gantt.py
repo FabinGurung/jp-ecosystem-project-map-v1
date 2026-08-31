@@ -63,6 +63,13 @@ class M01ScheduleGanttTests(unittest.TestCase):
         self.assertIn('SYNTHETIC DEMO — NOT LIVE SITE DATA', source)
         self.assertIn('M01', source)
 
+    def test_m01_observer_does_not_watch_its_own_render_panel(self) -> None:
+        source = (ROOT / "assets" / "js" / "m01-schedule-gantt.js").read_text(encoding="utf-8")
+        initialize = source[source.index("function initializeM01()"):]
+        initialize = initialize[:initialize.index("initializeM01();")]
+        self.assertIn('document.getElementById("detail-code")', initialize)
+        self.assertNotIn('document.getElementById("panel-works")', initialize)
+
     def test_m01_to_resource_bridge_is_explicit(self) -> None:
         m01 = (ROOT / "assets" / "js" / "m01-schedule-gantt.js").read_text(encoding="utf-8")
         legacy = (ROOT / "assets" / "js" / "site-operations-prototype.js").read_text(encoding="utf-8")
