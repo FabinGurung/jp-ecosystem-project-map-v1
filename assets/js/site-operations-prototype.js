@@ -257,6 +257,16 @@ function ensurePrototype() {
   });
 }
 
+function handleM01WorkSelected(event) {
+  const workId = String(event.detail?.workId || "").trim();
+  if (!workId || !demoResources[workId]) return;
+  selectedDemoWorkId = workId;
+  document.getElementById("tab-materials")?.click();
+  renderResourcePrototype();
+}
+
+window.addEventListener("jp:m01-work-selected", handleM01WorkSelected);
+
 function initializePrototype() {
   const targets = [
     document.getElementById("detail-code"),

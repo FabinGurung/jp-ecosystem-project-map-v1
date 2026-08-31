@@ -1,0 +1,150 @@
+{
+  "module": "M01_SCHEDULE_GANTT",
+  "schema_version": "1.0",
+  "dataset_status": "SYNTHETIC_DEMO_NOT_LIVE_SITE_DATA",
+  "generated_at": "2026-08-30",
+  "projects": [
+    {
+      "canonical_project_id": "PRJ-000006",
+      "company_project_code": "FBL-005",
+      "project_name": "31 Sharada Adhikari",
+      "overall_progress_percent": 62,
+      "update_date": "2026-08-30",
+      "source_status": "SYNTHETIC",
+      "works": [
+        {
+          "work_id": "WRK-000001",
+          "work_name": "PCC (M20) for RCC Works",
+          "sequence": 1,
+          "planned_start": "2026-08-10",
+          "planned_finish": "2026-08-12",
+          "actual_finish": "2026-08-12",
+          "status": "COMPLETED",
+          "progress_percent": 100,
+          "milestone": "Structural works",
+          "note": "Synthetic demo row."
+        },
+        {
+          "work_id": "WRK-000027",
+          "work_name": "Reinforcement Steel",
+          "sequence": 2,
+          "planned_start": "2026-08-13",
+          "planned_finish": "2026-08-14",
+          "actual_finish": "2026-08-14",
+          "status": "COMPLETED",
+          "progress_percent": 100,
+          "milestone": "Structural works",
+          "note": "Synthetic demo row."
+        },
+        {
+          "work_id": "WRK-000002",
+          "work_name": "Centering and Shuttering for RCC Works",
+          "sequence": 3,
+          "planned_start": "2026-08-14",
+          "planned_finish": "2026-08-15",
+          "actual_finish": "2026-08-15",
+          "status": "COMPLETED",
+          "progress_percent": 100,
+          "milestone": "Structural works",
+          "note": "Synthetic demo row."
+        },
+        {
+          "work_id": "WRK-000023",
+          "work_name": "Cementitious Waterproofing",
+          "sequence": 4,
+          "planned_start": "2026-08-16",
+          "planned_finish": "2026-08-17",
+          "actual_finish": "2026-08-17",
+          "status": "COMPLETED",
+          "progress_percent": 100,
+          "milestone": "Structural works",
+          "note": "Synthetic demo row."
+        },
+        {
+          "work_id": "WRK-000003",
+          "work_name": "Brick Masonry in Cement Mortar",
+          "sequence": 5,
+          "planned_start": "2026-08-16",
+          "planned_finish": "2026-08-18",
+          "actual_finish": "2026-08-18",
+          "status": "COMPLETED",
+          "progress_percent": 100,
+          "milestone": "Masonry",
+          "note": "Synthetic demo row."
+        },
+        {
+          "work_id": "WRK-000005",
+          "work_name": "Internal Plaster",
+          "sequence": 6,
+          "planned_start": "2026-08-19",
+          "planned_finish": "2026-08-20",
+          "actual_finish": "",
+          "status": "IN_PROGRESS",
+          "progress_percent": 60,
+          "milestone": "Plaster",
+          "note": "Synthetic demo current activity."
+        },
+        {
+          "work_id": "WRK-000006",
+          "work_name": "External Plaster",
+          "sequence": 7,
+          "planned_start": "2026-08-21",
+          "planned_finish": "2026-08-23",
+          "actual_finish": "",
+          "status": "NOT_STARTED",
+          "progress_percent": 0,
+          "milestone": "Plaster",
+          "note": "Synthetic demo look-ahead."
+        },
+        {
+          "work_id": "WRK-000011",
+          "work_name": "Floor Screed",
+          "sequence": 8,
+          "planned_start": "2026-08-24",
+          "planned_finish": "2026-08-25",
+          "actual_finish": "",
+          "status": "NOT_STARTED",
+          "progress_percent": 0,
+          "milestone": "Flooring & joinery",
+          "note": "Synthetic demo look-ahead."
+        },
+        {
+          "work_id": "WRK-000013",
+          "work_name": "Porcelain Glazed Tile Flooring",
+          "sequence": 9,
+          "planned_start": "2026-08-26",
+          "planned_finish": "2026-08-29",
+          "actual_finish": "",
+          "status": "NOT_STARTED",
+          "progress_percent": 0,
+          "milestone": "Flooring & joinery",
+          "note": "Synthetic demo look-ahead."
+        },
+        {
+          "work_id": "WRK-000016",
+          "work_name": "Sal Wood Door/Window Frames",
+          "sequence": 10,
+          "planned_start": "2026-08-30",
+          "planned_finish": "2026-09-01",
+          "actual_finish": "",
+          "status": "NOT_STARTED",
+          "progress_percent": 0,
+          "milestone": "Flooring & joinery",
+          "note": "Synthetic demo look-ahead."
+        },
+        {
+          "work_id": "WRK-000009",
+          "work_name": "Internal Emulsion Paint",
+          "sequence": 11,
+          "planned_start": "2026-09-02",
+          "planned_finish": "2026-09-05",
+          "actual_finish": "",
+          "status": "NOT_STARTED",
+          "progress_percent": 0,
+          "milestone": "Finishing & handover",
+          "note": "Synthetic demo look-ahead."
+        }
+      ]
+    }
+  ]
+}
