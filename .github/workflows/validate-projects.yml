@@ -55,6 +55,7 @@ jobs:
           node --check assets/js/csv.js
           node --check assets/js/app.js
           node --check assets/js/m01-schedule-gantt.js
+          node --check assets/js/m02-progress-report.js
           node --check assets/js/site-operations-prototype.js
 
       - name: Run JavaScript CSV tests

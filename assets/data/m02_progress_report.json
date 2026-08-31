@@ -1,0 +1,62 @@
+{
+  "module": "M02_PROGRESS_REPORT",
+  "schema_version": "1.0",
+  "dataset_status": "SYNTHETIC_DEMO_NOT_LIVE_SITE_DATA",
+  "generated_at": "2026-08-31",
+  "projects": [
+    {
+      "canonical_project_id": "PRJ-000006",
+      "company_project_code": "FBL-005",
+      "project_name": "31 Sharada Adhikari",
+      "update_date": "2026-08-31",
+      "source_status": "SYNTHETIC",
+      "progress_updates": [
+        {
+          "work_id": "WRK-000003",
+          "work_name": "Brick Masonry in Cement Mortar",
+          "progress_percent": 100,
+          "status": "COMPLETED",
+          "update_date": "2026-08-18",
+          "evidence_note": "Synthetic demo completion note; not a real field observation.",
+          "evidence_reference": "SYNTHETIC:M02:WRK-000003:2026-08-18"
+        },
+        {
+          "work_id": "WRK-000005",
+          "work_name": "Internal Plaster",
+          "progress_percent": 60,
+          "status": "IN_PROGRESS",
+          "update_date": "2026-08-31",
+          "evidence_note": "Synthetic demo current-progress note; no private photo or site evidence is attached.",
+          "evidence_reference": "SYNTHETIC:M02:WRK-000005:2026-08-31"
+        },
+        {
+          "work_id": "WRK-000006",
+          "work_name": "External Plaster",
+          "progress_percent": 0,
+          "status": "NOT_STARTED",
+          "update_date": "2026-08-31",
+          "evidence_note": "Synthetic demo next-work marker; start has not been observed.",
+          "evidence_reference": "SYNTHETIC:M02:WRK-000006:2026-08-31"
+        },
+        {
+          "work_id": "WRK-000011",
+          "work_name": "Floor Screed",
+          "progress_percent": 0,
+          "status": "NOT_STARTED",
+          "update_date": "2026-08-31",
+          "evidence_note": "Synthetic demo next-work marker; start has not been observed.",
+          "evidence_reference": "SYNTHETIC:M02:WRK-000011:2026-08-31"
+        },
+        {
+          "work_id": "WRK-000013",
+          "work_name": "Porcelain Glazed Tile Flooring",
+          "progress_percent": 0,
+          "status": "NOT_STARTED",
+          "update_date": "2026-08-31",
+          "evidence_note": "Synthetic demo next-work marker; start has not been observed.",
+          "evidence_reference": "SYNTHETIC:M02:WRK-000013:2026-08-31"
+        }
+      ]
+    }
+  ]
+}
