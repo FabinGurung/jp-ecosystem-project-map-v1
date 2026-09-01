@@ -203,6 +203,10 @@ function renderResourcePrototype() {
   if (!panel) return;
 
   const existing = panel.querySelector("[data-site-ops-resources]");
+  if (window.JP_M03_MATERIAL_READINESS_ACTIVE) {
+    existing?.remove();
+    return;
+  }
   const code = selectedProjectCode();
   if (code !== DEMO_PROJECT_CODE) {
     if (!existing) {
@@ -258,6 +262,7 @@ function ensurePrototype() {
 }
 
 function handleM01WorkSelected(event) {
+  if (window.JP_M03_MATERIAL_READINESS_ACTIVE) return;
   const workId = String(event.detail?.workId || "").trim();
   if (!workId || !demoResources[workId]) return;
   selectedDemoWorkId = workId;

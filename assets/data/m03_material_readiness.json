@@ -1,0 +1,138 @@
+{
+  "module": "M03_MATERIAL_QUANTITY_READINESS",
+  "schema_version": "1.0",
+  "dataset_status": "SYNTHETIC_UI_EVIDENCE_NOT_LIVE_INVENTORY",
+  "generated_at": "2026-08-31",
+  "source_basis": "LEGACY_SITE_OPERATIONS_SYNTHETIC_DEMO",
+  "projects": [
+    {
+      "canonical_project_id": "PRJ-000006",
+      "company_project_code": "FBL-005",
+      "project_name": "31 Sharada Adhikari",
+      "update_date": "2026-08-31",
+      "source_status": "SYNTHETIC_UI_EVIDENCE",
+      "work_materials": [
+        {
+          "work_id": "WRK-000005",
+          "work_name": "Internal Plaster",
+          "material_id": "MAT-000001",
+          "material_name": "Cement",
+          "required_quantity": 20,
+          "available_quantity": 28,
+          "unit": "bag",
+          "readiness_status": "READY",
+          "evidence_note": "Reused from the legacy synthetic Site Operations resource prototype; not a live stock count.",
+          "evidence_reference": "SYNTHETIC:UI_EVIDENCE:WRK-000005:CEMENT"
+        },
+        {
+          "work_id": "WRK-000005",
+          "work_name": "Internal Plaster",
+          "material_id": "MAT-000003",
+          "material_name": "Sand",
+          "required_quantity": 2.0,
+          "available_quantity": 0.8,
+          "unit": "cum",
+          "readiness_status": "SHORT",
+          "evidence_note": "Reused from the legacy synthetic Site Operations resource prototype; not a live stock count.",
+          "evidence_reference": "SYNTHETIC:UI_EVIDENCE:WRK-000005:SAND"
+        },
+        {
+          "work_id": "WRK-000006",
+          "work_name": "External Plaster",
+          "material_id": "MAT-000001",
+          "material_name": "Cement",
+          "required_quantity": 24,
+          "available_quantity": 28,
+          "unit": "bag",
+          "readiness_status": "READY",
+          "evidence_note": "Reused from the legacy synthetic Site Operations resource prototype; not a live stock count.",
+          "evidence_reference": "SYNTHETIC:UI_EVIDENCE:WRK-000006:CEMENT"
+        },
+        {
+          "work_id": "WRK-000006",
+          "work_name": "External Plaster",
+          "material_id": "MAT-000003",
+          "material_name": "Sand",
+          "required_quantity": 2.5,
+          "available_quantity": 0.8,
+          "unit": "cum",
+          "readiness_status": "SHORT",
+          "evidence_note": "Reused from the legacy synthetic Site Operations resource prototype; not a live stock count.",
+          "evidence_reference": "SYNTHETIC:UI_EVIDENCE:WRK-000006:SAND"
+        },
+        {
+          "work_id": "WRK-000011",
+          "work_name": "Floor Screed",
+          "material_id": "MAT-000001",
+          "material_name": "Cement",
+          "required_quantity": 15,
+          "available_quantity": 28,
+          "unit": "bag",
+          "readiness_status": "READY",
+          "evidence_note": "Reused from the legacy synthetic Site Operations resource prototype; not a live stock count.",
+          "evidence_reference": "SYNTHETIC:UI_EVIDENCE:WRK-000011:CEMENT"
+        },
+        {
+          "work_id": "WRK-000011",
+          "work_name": "Floor Screed",
+          "material_id": "MAT-000003",
+          "material_name": "Sand",
+          "required_quantity": 1.5,
+          "available_quantity": 0.8,
+          "unit": "cum",
+          "readiness_status": "SHORT",
+          "evidence_note": "Reused from the legacy synthetic Site Operations resource prototype; not a live stock count.",
+          "evidence_reference": "SYNTHETIC:UI_EVIDENCE:WRK-000011:SAND"
+        },
+        {
+          "work_id": "WRK-000013",
+          "work_name": "Porcelain Glazed Tile Flooring",
+          "material_id": "MAT-000007",
+          "material_name": "Tiles",
+          "required_quantity": 85,
+          "available_quantity": 0,
+          "unit": "sqm",
+          "readiness_status": "MISSING",
+          "evidence_note": "Reused from the legacy synthetic Site Operations resource prototype; not a live stock count.",
+          "evidence_reference": "SYNTHETIC:UI_EVIDENCE:WRK-000013:TILES"
+        },
+        {
+          "work_id": "WRK-000013",
+          "work_name": "Porcelain Glazed Tile Flooring",
+          "material_id": null,
+          "material_name": "Tile adhesive",
+          "required_quantity": null,
+          "available_quantity": null,
+          "unit": null,
+          "readiness_status": "UNKNOWN",
+          "evidence_note": "The legacy synthetic prototype displayed a tile-adhesive quantity, but no canonical material_id exists in materials_master.csv; M03 quarantines the quantity rather than inventing a master mapping.",
+          "evidence_reference": "SYNTHETIC:UI_EVIDENCE:WRK-000013:TILE_ADHESIVE:QUARANTINED"
+        },
+        {
+          "work_id": "WRK-000016",
+          "work_name": "Sal Wood Door/Window Frames",
+          "material_id": "MAT-000010",
+          "material_name": "Timber",
+          "required_quantity": null,
+          "available_quantity": null,
+          "unit": null,
+          "readiness_status": "UNKNOWN",
+          "evidence_note": "The legacy synthetic prototype used a count for Sal timber frames, while the current material master has an unresolved L/S unit; quantities remain UNKNOWN until the unit is reconciled.",
+          "evidence_reference": "SYNTHETIC:UI_EVIDENCE:WRK-000016:TIMBER:UNIT_UNRESOLVED"
+        },
+        {
+          "work_id": "WRK-000009",
+          "work_name": "Internal Emulsion Paint",
+          "material_id": "MAT-000008",
+          "material_name": "Paint",
+          "required_quantity": null,
+          "available_quantity": null,
+          "unit": null,
+          "readiness_status": "UNKNOWN",
+          "evidence_note": "The legacy synthetic prototype used pails while the current material master requires product-specific unit confirmation; quantities remain UNKNOWN until reconciled.",
+          "evidence_reference": "SYNTHETIC:UI_EVIDENCE:WRK-000009:PAINT:UNIT_UNRESOLVED"
+        }
+      ]
+    }
+  ]
+}
