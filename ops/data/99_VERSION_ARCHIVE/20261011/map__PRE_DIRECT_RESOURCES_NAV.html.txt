@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="JP AEC Operations Hub public operational project map">
+  <title>JP AEC Operations Hub Operational Project Map</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="preconnect" href="https://tile.openstreetmap.org">
+  <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="assets/css/app.css?v=1.2.0-dev-20260803-1">
+  <style>
+    .jp-subnav{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 16px;border-bottom:1px solid #dfe4ea;background:#fff}
+    .jp-subnav a{text-decoration:none;border:1px solid #dfe4ea;border-radius:999px;padding:6px 10px;color:#172033;font-size:12px;font-weight:700;background:#fff}
+    .jp-subnav a.active{background:#eef4ff;border-color:#b2ccff;color:#175cd3}
+
+  /* v2.1 map-first: map fills the viewport; list, layers and filters are deliberate disclosures. */
+  :root{--accent:#176b57;--accent-dark:#0f5345;--accent-soft:#eaf3e9;--text:#224239;--line:#dbe5dc;--page:#f5f6ef;--panel:#fffefa}
+  .app-shell{height:100dvh;min-height:100dvh;grid-template-rows:auto auto minmax(0,1fr)}
+  .jp-subnav{background:#f6f7f0;padding:7px 16px;gap:8px;min-height:45px}
+  .jp-subnav a{border:0;background:transparent;color:#345e4f}.jp-subnav a.active{background:#dbece1;color:#145642;border:none}
+  .map-more{position:relative;font-size:12px;color:#31594a}.map-more summary{cursor:pointer;padding:6px 11px;list-style:none;border:1px solid #dce6dc;border-radius:20px;background:#fff}
+  .map-more summary::-webkit-details-marker{display:none}.map-more>div{position:absolute;z-index:1800;display:grid;gap:4px;min-width:150px;top:34px;left:0;background:#fff;border:1px solid #dbe6dc;padding:8px;border-radius:12px;box-shadow:0 9px 25px #153c2426}
+  .map-more>div a{border-radius:7px;display:block;padding:8px}
+  .app-header{padding:11px 20px;background:linear-gradient(115deg,#1c423a,#316c56);color:#fff;border:0;box-shadow:0 7px 18px #20433022}
+  .header-main{min-height:47px}.eyebrow{color:#c9edcf;letter-spacing:.11em;font-size:10px}.version-badge{display:none}
+  .app-header h1{font:700 clamp(24px,3vw,37px)/1.06 Georgia,serif;letter-spacing:-.02em}
+  .app-header .title-wrap p{display:none}.app-header .metric{background:#ffffff16;border:1px solid #ffffff3a;color:#fff;min-width:72px}
+  .app-header .metric strong{font-size:16px}.app-header .metric span{color:#d5e5d9;font-size:10px}
+  .app-header .metric:nth-child(n+2){display:none}
+  .app-header .filter-toggle{display:inline-flex!important;min-height:36px;width:auto;margin-top:7px;align-items:center;background:#eff6ee;color:#205747;border:1px solid #c6dfca;border-radius:10px;font-size:12px;padding:7px 12px}
+  .app-header .controls{display:none!important;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:12px;border-top:1px solid #ffffff25;padding-top:13px;gap:10px}
+  .app-header.filters-open .controls{display:grid!important}
+  .app-header .control{min-width:0;flex:initial}.app-header .control label{color:#e4f0e2}.app-header .control input,.app-header .control select{min-height:37px}
+  .app-header .controls .search-control{grid-column:span 2;min-width:0}
+  .app-header .controls .button{height:37px;background:#f4faf2;color:#21513e;border:1px solid #c8ddcb;border-radius:10px}
+  .workspace.list-collapsed{grid-template-columns:minmax(0,1fr)}.workspace:not(.list-collapsed){grid-template-columns:minmax(280px,320px) minmax(0,1fr)}
+  .workspace.detail-open.list-collapsed{grid-template-columns:minmax(0,1fr) minmax(330px,430px)}
+  .workspace.detail-open:not(.list-collapsed){grid-template-columns:minmax(245px,285px) minmax(0,1fr) minmax(330px,410px)}
+  .project-pane.collapsed{display:none}.project-pane{border-right:1px solid #dce5dd;background:#fffefa}
+  .map-stage{background:#e4eae1}.map-list-button{display:inline-flex!important;position:absolute;z-index:800;bottom:22px;left:18px;right:auto;min-height:41px;align-items:center;padding:9px 14px;border-radius:22px;border:1px solid #d7e4d9;background:#fffefa;box-shadow:0 5px 18px #1837272e;color:#215747;font-weight:800;font-size:12px;cursor:pointer}
+  .map-list-button:hover{background:#e7f2e8}
+  .map-layer-control{display:block;top:15px;right:15px;padding:0;border-radius:13px;background:#fffdf7;max-width:180px}
+  .map-layer-control summary{display:block;cursor:pointer;padding:9px 12px;font-size:12px;font-weight:800;color:#285c4e;list-style:none}
+  .map-layer-control summary::-webkit-details-marker{display:none}
+  .map-layer-control label{display:none;padding:4px 12px;font-size:12px}.map-layer-control[open] label{display:flex}.map-layer-control[open] label:last-child{padding-bottom:11px}
+  .detail-panel{background:#fffdf8}
+  @media(max-width:1050px){.workspace.detail-open.list-collapsed{grid-template-columns:minmax(0,1fr)}.workspace.detail-open:not(.list-collapsed){grid-template-columns:minmax(260px,310px) minmax(0,1fr)}}
+  @media(max-width:860px){
+   html,body{overflow:auto}.app-shell{height:auto;min-height:100dvh;grid-template-rows:auto auto minmax(0,1fr)}
+   .app-header{position:relative;padding:10px 12px}.app-header .controls{grid-template-columns:1fr 1fr}.app-header .controls .search-control{grid-column:1/-1}
+   .workspace,.workspace.detail-open,.workspace.list-collapsed,.workspace.detail-open.list-collapsed{display:grid;grid-template-columns:1fr;min-height:calc(100dvh - 145px);grid-template-rows:minmax(70dvh,1fr);overflow:visible}
+   .workspace:not(.list-collapsed){display:grid;grid-template-columns:1fr;grid-template-rows:minmax(68dvh,1fr) minmax(180px,32dvh)}
+   .map-stage,#map{min-height:67dvh}.map-stage{grid-row:1}.project-pane{grid-row:2;max-height:35dvh;border-right:0;border-top:1px solid #dce5dd}
+   .project-pane.collapsed{display:none}.map-list-button{left:12px;bottom:16px;right:auto}
+   .detail-panel{position:fixed;z-index:1300;top:auto;right:0;bottom:0;left:0;width:100%;max-height:76dvh}
+  }
+  @media(max-width:550px){.jp-subnav{padding:6px 10px}.app-header .controls{grid-template-columns:1fr}.app-header .controls .search-control{grid-column:auto}.app-header h1{font-size:27px}.metrics{display:none}.map-layer-control{top:9px;right:9px}.map-stage,#map{min-height:66dvh}}
+  @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition-duration:.01ms!important}}
+
+  /* Nearby projects collapse into accessible, touch-size group markers. */
+  .site-cluster-icon{background:transparent;border:none}
+  .site-cluster{width:46px;height:46px;border-radius:50%;background:#176b57;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 6px 18px #143b2b50;font:800 16px/1 system-ui;letter-spacing:0}
+  .site-cluster small{font-size:9px;margin-top:3px;font-weight:750}
+  .site-cluster-icon:focus-visible{outline:3px solid #e4a749;outline-offset:4px}
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <nav class="jp-subnav" aria-label="Map navigation">
+      <a href="site-operations.html">← Field desk</a><a href="map.html" class="active" aria-current="page">🗺️ Project map</a>
+      <details class="map-more"><summary>More ▾</summary><div><a href="index.html">Overview</a><a href="workspace/">Workspace</a><a href="pending/">Pending</a><a href="guide/">Guide</a></div></details>
+    </nav>
+    <header class="app-header" id="app-header">
+      <div class="header-main">
+        <div class="title-wrap">
+          <div class="eyebrow">
+            <span>PROJECT LOCATIONS · PUBLIC MAP</span>
+            <span class="version-badge" id="version-badge">v1.2.0-dev</span>
+          </div>
+          <h1 id="site-title">Project map</h1>
+          <p id="site-subtitle">Loading public project information…</p>
+        </div>
+        <div class="metrics" aria-live="polite">
+          <div class="metric"><strong id="visible-count">0</strong><span>visible</span></div>
+          <div class="metric"><strong id="public-count">0</strong><span>projects</span></div>
+          <div class="metric"><strong id="updated-date">—</strong><span>updated</span></div>
+        </div>
+      </div>
+
+      <button class="button filter-toggle" id="filter-toggle" type="button"
+              aria-expanded="false" aria-controls="map-controls">⚙ Filters</button>
+
+      <div class="controls" id="map-controls">
+        <div class="control">
+          <label for="scope-filter">Project scope</label>
+          <select id="scope-filter">
+            <option value="working" selected>Working projects (Daily Ops)</option>
+            <option value="all">All public projects</option>
+          </select>
+        </div>
+        <div class="control search-control">
+          <label for="search-input">Search project, code, ward, or company</label>
+          <input id="search-input" type="search" autocomplete="off"
+                 placeholder="Example: FBL-023, road, Ward 20, or Bhalam">
+        </div>
+        <div class="control">
+          <label for="status-filter">Status</label>
+          <select id="status-filter"><option value="">All statuses</option></select>
+        </div>
+        <div class="control">
+          <label for="sector-filter">Sector</label>
+          <select id="sector-filter"><option value="">All sectors</option></select>
+        </div>
+        <div class="control">
+          <label for="function-filter">Function</label>
+          <select id="function-filter"><option value="">All functions</option></select>
+        </div>
+        <div class="control">
+          <label for="company-filter">Company</label>
+          <select id="company-filter"><option value="">All companies</option></select>
+        </div>
+        <button class="button" id="reset-button" type="button">Reset</button>
+        <button class="button" id="list-toggle" type="button"
+                aria-expanded="false" aria-controls="project-pane">Show list</button>
+        <button class="button button-primary" id="download-button" type="button">Download GeoJSON</button>
+      </div>
+    </header>
+
+    <main class="workspace list-collapsed" id="workspace">
+      <aside class="project-pane collapsed" id="project-pane" aria-label="Public project list">
+        <div class="public-notice" id="public-notice"></div>
+        <div class="legend-block">
+          <div class="legend-title">Status colours</div>
+          <div class="status-legend" id="status-legend" role="group" aria-label="Project status legend"></div>
+        </div>
+        <div class="legend-block">
+          <div class="legend-title">Marker functions</div>
+          <div class="function-legend" id="function-legend" role="group" aria-label="Project function marker legend"></div>
+        </div>
+        <div class="list-heading">
+          <h2>Projects</h2>
+          <span id="list-count">0</span>
+        </div>
+        <div class="project-list" id="project-list"></div>
+      </aside>
+
+      <section class="map-stage" aria-label="Interactive project map">
+        <div id="map"></div>
+        <div id="map-message" class="map-message" role="alert"></div>
+        <details class="map-layer-control" aria-label="Map layers">
+          <summary>🧭 Layers</summary>
+          <label><input id="layer-projects" type="checkbox" checked> Projects</label>
+          <label><input id="layer-opportunities" type="checkbox"> Opportunities</label>
+          <label><input id="layer-locations" type="checkbox"> Offices</label>
+        </details>
+        <button class="map-list-button" id="map-list-button" type="button" aria-controls="project-pane" aria-expanded="false">☷ Show sites</button>
+      </section>
+
+      <aside class="detail-panel" id="detail-panel" aria-label="Selected project details" inert>
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <header class="detail-header">
+          <div>
+            <div class="detail-code" id="detail-code">—</div>
+            <h2 id="detail-title">Select a project</h2>
+            <p id="detail-subtitle"></p>
+          </div>
+          <button class="icon-button" id="detail-close" type="button" aria-label="Close project details">×</button>
+        </header>
+
+        <div class="detail-tabs" role="tablist" aria-label="Project information sections">
+          <button class="detail-tab active" id="tab-overview" type="button" role="tab"
+                  aria-selected="true" aria-controls="panel-overview" data-tab="overview">Overview</button>
+          <button class="detail-tab" id="tab-works" type="button" role="tab"
+                  aria-selected="false" aria-controls="panel-works" data-tab="works">
+            Works <span class="tab-count" id="works-tab-count">0</span>
+          </button>
+          <button class="detail-tab" id="tab-materials" type="button" role="tab"
+                  aria-selected="false" aria-controls="panel-materials" data-tab="materials">
+            Materials <span class="tab-count" id="materials-tab-count">0</span>
+          </button>
+        </div>
+
+        <div class="detail-body">
+          <section class="tab-panel active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview"></section>
+          <section class="tab-panel" id="panel-works" role="tabpanel" aria-labelledby="tab-works" hidden></section>
+          <section class="tab-panel" id="panel-materials" role="tabpanel" aria-labelledby="tab-materials" hidden></section>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script type="module" src="assets/js/app.js?v=1.2.0-dev-20260803-1"></script>
+</body>
+</html>
