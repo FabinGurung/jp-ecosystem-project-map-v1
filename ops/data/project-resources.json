@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1.1",
+  "schema_version": "0.1.0",
   "authority": {
     "actual_files": "GOOGLE_DRIVE_CANONICAL_SOURCE_EVIDENCE_WAREHOUSE",
     "structured_links": "GITHUB_CANONICAL_STRUCTURED_DATA_CONTROL_WAREHOUSE",
@@ -620,5 +620,5 @@
       ]
     }
   ],
-  "source_update_notice": "P001 source CAD/DWG links read from the linked Drive folder; presence and access verified, approved issue/revision not established; no Drive originals moved."
+  "source_update_notice": "Registry schema remains v0.1.0; Bishal source pointer admission is a backward-compatible record addition. Version/revision not certified; originals remain in Drive."
 }
