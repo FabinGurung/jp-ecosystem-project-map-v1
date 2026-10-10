@@ -1,0 +1,95 @@
+{
+  "event_id": "OPS-0063",
+  "workstream": "A9_CWO_COMMUNICATION_AND_WEB_OPERATIONS",
+  "date_npt": "2026-10-11",
+  "objective": "Restore direct map -> owner workspace -> project drawing access; clarify personal checklist, coordination, and provider-attributed progress report without disturbing existing skeleton.",
+  "source_drive_evidence": {
+    "user_supplied_folder": {
+      "id": "1JalzFJBfyTbF00pMnDpJP69qY1aaA-rX",
+      "name": "04_CAD_DWG",
+      "grandparent": "Bishal_Paija_Residence",
+      "intermediate_parent": "01_SOURCE_ORIGINALS",
+      "project_id": "P001"
+    },
+    "records": [
+      {
+        "drive_file_id": "16rUpvmH1JGyp_8hbU9BqispHfJNQzQh7",
+        "name": "Bishal (2) (4).dwg",
+        "mime": "application/dwg",
+        "approved_revision_verified": false
+      },
+      {
+        "drive_file_id": "1TzUCNxZ3WExD7H0mWYJ42KHsx11-A7BG",
+        "name": "Bishal Structure.dwg",
+        "mime": "application/dwg",
+        "approved_revision_verified": false
+      }
+    ],
+    "originals_moved": false,
+    "source_files_publicly_copied": false
+  },
+  "site_routes": {
+    "overview": "index.html",
+    "map": "map.html",
+    "owner_workspace": "workspace/index.html",
+    "project_resources": "resources/index.html",
+    "drawing_deep_link_example": "resources/?project=P007",
+    "bishop_dwg_deep_link": "resources/?project=P001",
+    "daily_checklist": "site-operations.html",
+    "site_coordination": "site-operations/coordination.html",
+    "progress_report": "site-operations/history.html",
+    "project_record": "site-operations/project.html?project=P001#drawings"
+  },
+  "machine_source_pointers": [
+    "ops/data/project-resources.json",
+    "ops/data/current-works.json",
+    "ops/data/progress-report-public.v0.2.jsonl",
+    "workspace/links.json"
+  ],
+  "edited_existing": [
+    "ops/data/project-resources.json",
+    "index.html",
+    "map.html",
+    "assets/js/app.js",
+    "workspace/index.html",
+    "workspace/links.json",
+    "site-operations.html",
+    "site-operations/coordination.html",
+    "site-operations/history.html",
+    "site-operations/project.html",
+    "scripts/qa_field_ux_browser.py"
+  ],
+  "new_pages": [
+    "resources/index.html"
+  ],
+  "provenance": {
+    "public_progress_source_tags": "PROVIDER_FIELD_WHEN_DISCORD_OR_SLACK; NO_PROVIDER_FOR_LEGACY_REMINDER",
+    "progress_transcription_first": "PREVIOUSLY_VERIFIED_GOOGLE_DRIVE_MACHINE_STAGE; NO_NEW_PROVIDER_BACKFILL_IN_THIS_RUN",
+    "coordinate_map_unchanged": true,
+    "engineering_drawing_approval_not_inferred": true,
+    "source_original_google_drive_access": "PERMISSION_GATED"
+  },
+  "published_backups": "99_VERSION_ARCHIVE/20261011 and ops/data/99_VERSION_ARCHIVE/20261011, readback verified",
+  "validation": {
+    "browser_qa": {
+      "status": "SUCCESS",
+      "url": "https://github.com/FabinGurung/JP_Communication-Command-Centre-and-Resource-Hub/actions/runs/38093798955",
+      "coverage": "Map navigation, source attribution, P001 DWG, P007 E2K, mobile"
+    },
+    "production": {
+      "status": "SUCCESS",
+      "url": "https://github.com/FabinGurung/JP_Communication-Command-Centre-and-Resource-Hub/actions/runs/38093798872"
+    },
+    "lane_registry": {
+      "status": "SUCCESS",
+      "url": "https://github.com/FabinGurung/JP_Communication-Command-Centre-and-Resource-Hub/actions/runs/38093798848"
+    }
+  },
+  "open_gaps": [
+    "INDEX_INCLUDES_ONLY_KNOWN_EIGHT_CURRENT_OPS_PROJECTS_NOT_ALL_DRIVE_FILES",
+    "APPROVED_REVISION_NOT_REVIEWED",
+    "PERMISSION_GATED_EXTERNAL_GOOGLE_DRIVE_LINKS",
+    "SOURCE_NORMALIZATION_IN_PROGRESS",
+    "MAP_COMPLETE_SOURCE_LAYER_UNCHANGED"
+  ]
+}
