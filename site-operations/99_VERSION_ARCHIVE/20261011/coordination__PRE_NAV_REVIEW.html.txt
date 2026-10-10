@@ -1,0 +1,40 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Detailed site holds, unresolved issues and engineer questions in one place.">
+<title>Site Coordination · Site Operations</title>
+<style>
+:root{--bg:#f5f8f2;--paper:#fffefa;--ink:#1e4031;--muted:#567063;--line:#dbe7dc;--green:#206a4d;--amber:#965f22;--red:#9b4337}*{box-sizing:border-box}
+body{margin:0;color:var(--ink);background:var(--bg);font:14px/1.48 system-ui,-apple-system,Arial,sans-serif}
+a{color:var(--green)}:focus-visible{outline:3px solid #eeb548;outline-offset:2px}.shell{max-width:960px;margin:0 auto;padding:14px 18px 45px}
+nav{display:flex;align-items:center;flex-wrap:wrap;gap:5px;padding:5px 0 12px;border-bottom:1px solid var(--line)}
+nav a{display:inline-flex;align-items:center;min-height:38px;padding:8px 10px;border-radius:8px;text-decoration:none;color:#476253;font-size:12px;font-weight:800}nav a[aria-current=page]{background:#dff0df;color:#1d654a}
+h1{font-size:clamp(24px,3vw,31px);letter-spacing:-.025em;margin:21px 0 3px}.intro{font-size:13px;color:var(--muted);margin:0 0 13px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:11px 0}.toolbar label{font-size:12px;font-weight:800}.toolbar select{min-height:40px;background:#fff;border:1px solid #c6d9ca;color:var(--ink);border-radius:8px;padding:8px 12px;min-width:190px}
+.note{padding:11px 12px;background:#fff7e8;border-left:3px solid #be882c;color:#624f30;font-size:12px;border-radius:8px;margin:14px 0}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:11px;margin:13px 0;overflow:hidden}.panel>summary{list-style:none;display:flex;justify-content:space-between;align-items:center;cursor:pointer;min-height:51px;padding:13px;font-size:16px;font-weight:800}.panel>summary::-webkit-details-marker{display:none}.panel>summary span{font-size:11px;color:var(--muted);font-weight:800}
+.panel-body{padding:0 14px 12px}.item{padding:12px 0;border-top:1px solid #edf1ed}.item b{display:block;font-size:13px;margin-bottom:5px;line-height:1.5}.item .meta{color:var(--muted);font-size:11px;line-height:1.5}.item a{display:inline-flex;align-items:center;min-height:31px;padding:6px 9px;border-radius:7px;background:#edf4ee;margin:7px 7px 0 0;font-size:11px;font-weight:800;text-decoration:none}
+.tag{font-size:10px;font-weight:850;border-radius:20px;padding:3px 8px;background:#fff1e3;color:#845b2b;margin-right:6px;display:inline-flex}.tag.hold{background:#ffeee9;color:var(--red)}
+.blank{color:var(--muted);font-size:12px;padding:12px 0}.foot{font-size:12px;color:var(--muted);line-height:1.5;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}.foot a{font-weight:800;text-decoration:none}
+@media(max-width:670px){.shell{padding:9px 12px 30px}.toolbar select{flex:1;min-width:170px}.panel>summary{font-size:14px;padding:12px}.item b{font-size:12px}}
+</style></head><body><main class="shell">
+<nav aria-label="Site Operations"><a href="../site-operations.html">Daily Checklist</a><a aria-current="page" href="coordination.html">Site Coordination</a><a href="history.html">Progress Report</a><a href="../map.html">Map</a></nav>
+<h1>Site Coordination</h1><p class="intro">All pending holds, decisions, and engineer questions, kept out of the daily checklist. Check sources here; resolve matters through the responsible person.</p>
+<div class="toolbar"><label for="project">Project</label><select id="project"><option value="">All sites</option></select><a id="deep-question-link" href="questions.html">Open answer form ↗</a></div>
+<div class="note" id="notice" role="status">Loading snapshot…</div>
+<details class="panel" open><summary>Holds &amp; unresolved issues <span id="issue-count"></span></summary><div class="panel-body" id="issues"><div class="blank">Loading issue records…</div></div></details>
+<details class="panel" open><summary>Engineer &amp; site questions <span id="question-count"></span></summary><div class="panel-body" id="questions"><div class="blank">Loading questions…</div></div></details>
+<p class="foot">Source-linked pending items are <strong>not instructions to resume a held activity</strong>. Use <a href="schedule.html">the previous detailed Work &amp; Holds view</a> or <a href="questions.html">the structured MCQ response form</a> when additional detail is required. These older URLs remain supported. No check here independently changes the project schedule or saves a decision.</p>
+</main>
+<script>
+(()=>{"use strict";const $=id=>document.getElementById(id),esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));let data=null;
+const safeUrl=s=>/^https:\/\/(jp09\.slack\.com|discord\.com)\//.test(s||"")?s:null;
+function render(){if(!data)return;const pid=$("project").value,issues=data.open_issues.filter(x=>!pid||x.project_id===pid),qs=data.engineer_questions.filter(x=>!pid||x.project_id===pid);
+$("issue-count").textContent=issues.length+" open";$("question-count").textContent=qs.length+" pending";$("deep-question-link").href="questions.html"+(pid?"?project="+encodeURIComponent(pid):"");
+const name=id=>data.sites.find(s=>s.project_id===id)?.display_name||id;
+$("issues").innerHTML=issues.length?issues.map(x=>'<div class="item"><b><span class="tag'+(x.recorded_held_task?" hold":"")+'">'+(x.recorded_held_task?"Recorded HOLD":x.recorded_site_readiness==="HOLD"?"Site HOLD context":"Open issue")+'</span>'+esc(x.description)+'</b><div class="meta">'+esc(name(x.project_id))+' · First logged '+esc(x.first_recorded_date||"unknown")+' · '+esc(x.responsible_role||"unassigned")+' · Not verified closed</div>'+(x.source_urls||[]).filter(safeUrl).slice(0,2).map(s=>'<a target="_blank" rel="noopener noreferrer" href="'+esc(s)+'">Source ↗</a>').join("")+'</div>').join(""):'<div class="blank">No open issues recorded for this selection; this is not an inspection certificate.</div>';
+$("questions").innerHTML=qs.length?qs.map(q=>'<div class="item"><b>'+esc(q.question)+'</b><div class="meta">'+esc(name(q.project_id))+' · '+esc(q.trade_id)+' · Awaiting responsible response · '+esc(q.question_id)+'</div>'+(safeUrl(q.source_url)?'<a href="'+esc(q.source_url)+'" target="_blank" rel="noopener noreferrer">Source ↗</a>':"")+'<a href="questions.html?project='+encodeURIComponent(q.project_id)+'">Prepare answer ↗</a></div>').join(""):'<div class="blank">No questions recorded in this snapshot for this selection.</div>';}
+async function load(){try{const r=await fetch("../ops/data/site-execution-questions.v0.1.json?v="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);data=await r.json();if(!Array.isArray(data.sites)||!Array.isArray(data.open_issues)||!Array.isArray(data.engineer_questions))throw Error("Invalid record format");
+$("project").innerHTML='<option value="">All sites</option>'+data.sites.map(s=>'<option value="'+esc(s.project_id)+'">'+esc(s.display_name)+'</option>').join("");
+let pre=new URLSearchParams(location.search).get("project");if(pre&&data.sites.some(s=>s.project_id===pre))$("project").value=pre;
+$("notice").textContent="Last source reconciliation: "+data.as_of_npt+" · "+data.open_issues.length+" unresolved issues and "+data.engineer_questions.length+" questions across "+data.sites.length+" sites. Site status requires fresh review.";render();}
+catch(e){$("notice").textContent="Source unavailable; no hold or approval status can be inferred.";$("issues").innerHTML='<div class="blank">Source not loaded.</div>';$("questions").innerHTML='<div class="blank">Source not loaded.</div>';}}
+$("project").addEventListener("change",render);load();})();
+</script></body></html>
