@@ -1,6 +1,6 @@
 {
   "contract_id": "A9-CWO-SITE-OPERATIONS-VIEWS-001",
-  "schema_version": "0.2.0",
+  "schema_version": "0.3.0",
   "effective_date_npt": "2026-10-10",
   "canonical_project_data": "ops/data/current-works.json",
   "source_evidence_originals": "PRIVATE_GDRIVE_ONLY",
@@ -8,46 +8,44 @@
   "information_architecture": [
     {
       "page": "site-operations.html",
-      "role": "CHECKLIST_FOR_TODAY",
-      "priority": 1,
-      "data": "ops/data/site-daily-checklist.v0.1.json",
-      "render": "ONE_EXPANDABLE_SITE_AT_A_TIME; ONLY_CHECKBOXES_AND_FOLLOWUP_LINKS; NO_HEAVY_METRICS_OR_HISTORY",
-      "completion": "IN_MEMORY_EPHEMERAL_NOT_APPROVAL",
-      "invalidation": "CURRENT_DATE_AND_SOURCE_SNAPSHOT_MUST_BE_DISPLAYED"
+      "name": "Checklist for Today",
+      "role": "PERSONALLY_AUTHORED_DAILY_CHECKLIST",
+      "authority": "USER_LOCAL_BROWSER_ONLY",
+      "machine_input": "ops/data/current-works.json_PROJECT_NAMES_ONLY",
+      "auto_import_former_checklist": false,
+      "storage": "localStorage_per_nepal_date_project",
+      "sharing": "MANUAL_COPY_ONLY",
+      "limitations": "NOT_SYNCED_NOT_GOOGLE_DRIVE_NOT_CONSTRUCTION_COMPLETION"
     },
     {
       "page": "site-operations/coordination.html",
-      "role": "HOLDS_ISSUES_AND_ENGINEER_QUESTIONS_TOGEThER",
-      "priority": 2,
-      "data": "ops/data/site-execution-questions.v0.1.json",
-      "render": "COMPACT_PROJECT_FILTER_AND_SEPARATE_EXPANDABLE_ISSUES_AND_QUESTIONS"
+      "name": "Site Coordination",
+      "role": "PENDING_ISSUES_AND_ENGINEER_QUERIES",
+      "data": "ops/data/site-execution-questions.v0.1.json"
     },
     {
       "page": "site-operations/history.html",
-      "display_name": "Progress Report",
-      "role": "HISTORICAL_PROGRESS_REPORT",
-      "priority": 3,
-      "data": "ops/data/progress-history-public.v0.1.jsonl",
-      "historical_projection_only": true,
-      "evidence_owner": "A9-CWO Evidence Registry & Projection Engine"
+      "name": "Progress Report",
+      "role": "DERIVED_PUBLIC_SAFE_HISTORY",
+      "data": "ops/data/progress-report-public.v0.2.jsonl",
+      "canonical_stage_drive_folder": "14xkUGf6WngV1uvVfe433lBtSzD3BrqOK",
+      "canonical_stage_drive_file_id": "1IAK9GybTDIP9mCzom-tn_3_uKvfajdcK",
+      "raw_unmodified_discord_archive": "1mtTZUPlBHd7bDV715qSWACRS2i5MalT9",
+      "original_slack_control_registry": "11L98HnMJ2xF5F5HPVmg96azetGTd6CoyIVBWnkWxcbw"
     },
     {
       "page": "site-operations/schedule.html",
-      "role": "LEGACY_DETAILED_WORK_HOLDS",
-      "priority": 4,
+      "role": "LEGACY_HOLD_DETAIL",
       "preserve_url": true
     },
     {
       "page": "site-operations/questions.html",
-      "role": "LEGACY_ENGINEER_MCQ_ANSWER_DRAFT",
-      "priority": 5,
-      "preserve_url": true,
-      "write_back": "NOT_IMPLEMENTED"
+      "role": "LEGACY_MCQ_DETAIL",
+      "preserve_url": true
     },
     {
       "page": "site-operations/project.html",
-      "role": "PROJECT_DETAILS_DRAWINGS_EVIDENCE",
-      "priority": 6,
+      "role": "LEGACY_PROJECT_RECORD",
       "preserve_url": true
     }
   ],
@@ -99,23 +97,65 @@
     "MOBILE_MENU"
   ],
   "daily_checklist_contract": {
-    "as_of_npt": "2026-10-10",
-    "source": "ops/data/site-daily-checklist.v0.1.json",
-    "record_id_stability": "project_id + original question_id",
-    "checkbox_state": "CLIENT_RAM_ONLY_NOT_CANONICAL_AND_NOT_PERSISTENT",
-    "scope": "REVIEW_AND_RELAY_FOLLOWUPS_TO_SITE_ENGINEERS",
-    "check_meaning": "MARK_REVIEWED_LOCALLY_NOT_WORK_COMPLETED",
-    "send": "COPY_ONLY_NO_DIRECT_PROVIDER_WRITE",
-    "admission": "NO_APPROVED_DATED_CREW_WORK_IN_CURRENT_SOURCE_SNAPSHOT",
-    "note": "Every new live daily list must be generated from provider reconciliation and approved scheduling data; never recycle historic pending questions as new assignments without explicit source timestamp."
+    "owner": "USER",
+    "statuses": "PERSONAL_REVIEWED_VS_UNREVIEWED_NOT_WORK_DONE",
+    "source": "USER_TYPED_ONLY",
+    "previous_auto_entries_migrated_to_drive_file_id": "1MMJ3Lak1L1FAMsNNNRYd76p5Dut7vOkq",
+    "previous_auto_entries_count": 32,
+    "first_new_load": "EMPTY",
+    "site_list_authority": "ops/data/current-works.json",
+    "storage": "BROWSER_LOCAL_STORAGE_ONLY",
+    "multi_device_sync": false,
+    "automatic_slack_send": false,
+    "requires_human_entry": true
   },
   "progress_report_contract": {
-    "source": "ops/data/progress-history-public.v0.1.jsonl",
-    "current_seed_records": 5,
-    "private_originals": "GDRIVE",
-    "raw_269_attachment_verification_failures": "UNRESOLVED",
-    "scope": "PARTIAL_HISTORY_NOT_COMPLETE_ARCHIVE",
-    "missing_quantities": "NO_INFERENCE_ALLOWED"
+    "authority": "PROVIDER_SOURCES_AND_PRIVATE_GOOGLE_DRIVE_NORMALIZATION",
+    "stages": [
+      {
+        "kind": "source_original",
+        "platforms": [
+          "DISCORD",
+          "SLACK"
+        ],
+        "drive_location": "EXISTING_SOURCE_ARCHIVES",
+        "immutable": true
+      },
+      {
+        "kind": "normalization",
+        "format": "JSONL",
+        "drive_folder_id": "14xkUGf6WngV1uvVfe433lBtSzD3BrqOK",
+        "verified_files": [
+          {
+            "file_id": "1MMJ3Lak1L1FAMsNNNRYd76p5Dut7vOkq",
+            "rows": 32,
+            "role": "OLD_CHECKLIST_CARRYOVER"
+          },
+          {
+            "file_id": "1IAK9GybTDIP9mCzom-tn_3_uKvfajdcK",
+            "rows": 37,
+            "role": "STAGED_TYPED_EVENT_STREAM"
+          }
+        ]
+      },
+      {
+        "kind": "public_safe_projection",
+        "path": "ops/data/progress-report-public.v0.2.jsonl",
+        "rows": 37
+      }
+    ],
+    "buckets": {
+      "field_reported_observations": 5,
+      "source_linked_unresolved_questions": 14,
+      "old_routine_reminders": 18
+    },
+    "no_completed_work_inferred": true,
+    "archive_status": "PARTIAL_21_SOURCES_269_ATTACHMENT_ISSUES",
+    "provider_raw_text_full_retranscription_complete": false,
+    "cross_run_deduplication_pending": true,
+    "engineer_acceptance_pending": true,
+    "material_quantity_reconciliation_pending": true,
+    "edit_prohibition": "DO_NOT_HAND_AUTHOR_WEBSITE_REPORTS_OUTSIDE_MACHINE_PIPELINE"
   },
   "web_skeleton": {
     "root_route_preserved": true,
@@ -126,5 +166,5 @@
     "drive_reorganization": false,
     "pre_versions_archived": true
   },
-  "publication_gate": "PUBLIC_SAFE_PROJECTIONS_ONLY"
+  "publication_gate": "DRIVE_STAGE_NORMALIZED_READBACK_BEFORE_ANY_GITHUB_PUBLIC_PROJECTION"
 }
