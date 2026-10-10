@@ -1,0 +1,64 @@
+{
+  "event_id": "OPS-0062",
+  "record_kind": "A9_CWO_PROGRESS_REPORT_DRIVE_FIRST_MIGRATION",
+  "run_date_npt": "2026-10-11",
+  "status": "DEPLOYED_QA_PASS",
+  "raw_sources": {
+    "discord_archive_folder_id": "1mtTZUPlBHd7bDV715qSWACRS2i5MalT9",
+    "raw_discord_jsonl_folder_id": "1Mw1a69cLCb-Mcsbm_SZ4qEh3SIe8wY4M",
+    "discord_attachments_folder_id": "1q1bv753JFoLP6ut_5-cqASG9QpTL0Dxk",
+    "slack_control_registry_drive_id": "11L98HnMJ2xF5F5HPVmg96azetGTd6CoyIVBWnkWxcbw",
+    "slack_provider_events_registry_drive_id": "1v0ing8vjxpG_h0ohX9m82sDZPZETdOS7bWNBXIJbnQo"
+  },
+  "new_private_drive_stage": {
+    "folder_id": "14xkUGf6WngV1uvVfe433lBtSzD3BrqOK",
+    "carryover_jsonl_file_id": "1MMJ3Lak1L1FAMsNNNRYd76p5Dut7vOkq",
+    "normalized_event_jsonl_file_id": "1IAK9GybTDIP9mCzom-tn_3_uKvfajdcK",
+    "migration_receipt_json_file_id": "1V3UHWrPIKuI8DoYAHVsZQcrAh68BpXOg",
+    "verified_readback": {
+      "carryover_jsonl_unique_records": 32,
+      "normalized_event_jsonl_unique_records": 37,
+      "migration_receipt_parse": "PASS"
+    },
+    "originals_reorganized": false
+  },
+  "record_types": {
+    "field_reported_observations": 5,
+    "source_linked_unresolved_communications": 14,
+    "legacy_routine_checklist_reminders": 18,
+    "complete_total": 37
+  },
+  "derived_public_projection": "ops/data/progress-report-public.v0.2.jsonl",
+  "derived_website": "site-operations/history.html",
+  "manual_daily_checklist": "site-operations.html",
+  "old_auto_checklist_items_currently_shown_on_daily_checklist": 0,
+  "user_authored_storage": "browser_localStorage_per_project_per_Nepal_date",
+  "legacy_detailed_pages_kept": [
+    "site-operations/schedule.html",
+    "site-operations/questions.html",
+    "site-operations/project.html"
+  ],
+  "protections": [
+    "OBSERVED_REPORT_NOT_ACCEPTED_CONSTRUCTION_COMPLETION",
+    "UNRESOLVED_MESSAGES_NOT_WORK_DONE",
+    "LEGACY_ROUTINE_REMINDER_NOT_PHYSICAL_SITE_EVENT",
+    "NO_UNVERIFIED_CEMENT_USAGE",
+    "NO_PRIVATE_MEDIA_COPIES_TO_PUBLIC_REPO",
+    "NO_DIVE_ORIGINAL_REARRANGEMENT"
+  ],
+  "limitations": [
+    "FULL_RAW_DISCORD_PROVIDER_TRANSCRIPT_BACKFILL_INCOMPLETE",
+    "SLACK_GDRIVE_REGISTRIES_NOT_COMPLETE_HISTORICAL_SLACK_MESSAGE_ARCHIVE",
+    "269_DISCORD_ATTACHMENT_ORIGINAL_VERIFICATIONS_UNRESOLVED",
+    "SOURCE_PROVIDER_TEXT_NOT_DIRECTLY_REREAD_FOR_EACH_MIGRATED_CHECK",
+    "HISTORICAL_5_PLUS_32_ARE_ONLY_INITIAL_PARTIAL_SNAPSHOT",
+    "BROWSER_CHECKLIST_IS_NOT_SYNCED_AND_NOT_ENGINEERING_SIGNOFF"
+  ],
+  "verification": {
+    "drive_public_migration_receipt_id": "1V3UHWrPIKuI8DoYAHVsZQcrAh68BpXOg",
+    "github_reads": "PASS",
+    "branch_validation": "https://github.com/FabinGurung/JP_Communication-Command-Centre-and-Resource-Hub/actions/runs/38092697135",
+    "production": "https://github.com/FabinGurung/JP_Communication-Command-Centre-and-Resource-Hub/actions/runs/38092697101",
+    "browser_desktop_mobile_accessibility": "https://github.com/FabinGurung/JP_Communication-Command-Centre-and-Resource-Hub/actions/runs/38092697116"
+  }
+}
