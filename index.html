@@ -15,6 +15,7 @@
     .card:hover{transform:translateY(-2px);border-color:#b2ccff}.icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--soft);font-size:24px}
     .card h2{font-size:24px;margin:18px 0 8px}.card p{color:var(--muted);line-height:1.55;margin:0}.card ul{padding-left:18px;color:var(--muted);line-height:1.7}.go{margin-top:auto;color:var(--accent);font-weight:800}
     .architecture{margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}.architecture h3{margin:0 0 8px}.architecture p{margin:0;color:var(--muted);line-height:1.55}
+    .quicklinks{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.quicklinks a{background:#fff;color:#165c44;border:1px solid #d6e5dd;text-decoration:none;padding:10px 12px;min-height:42px;border-radius:10px;font-size:12px;font-weight:750}.quicklinks a:hover{background:#eaf4ec}
     .notice{margin-top:18px;border:1px solid #fedf89;background:#fff8e6;color:#7a2e0e;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.5}
     footer{margin-top:24px;color:var(--muted);font-size:12px}@media(max-width:760px){.grid{grid-template-columns:1fr}.card{min-height:240px}.shell{padding:20px 12px 32px}}
   </style>
@@ -25,27 +26,30 @@
       <div>
         <div class="eyebrow">JP AEC Platform</div>
         <h1>JP AEC Operations Hub</h1>
-        <div class="lead">The live experience layer of the JP AEC Platform: real project locations, Slack-fed Daily Ops, readiness, progress, evidence and permission-gated engineering resources. Specialist planning, estimation, structural-analysis and CAD systems remain standardized modules around this hub.</div>
+        <div class="lead">The live experience layer of the JP AEC Platform: project locations, owner workspaces, Drive-hosted drawings and models, a personal checklist, communication follow-ups and source-attributed progress reports. Specialist planning, estimation, structural-analysis and CAD systems remain standardized modules around this hub.</div>
       </div>
-      <div class="branch">Branch workspace · feature/daily-ops-current-work</div>
+      <div class="branch">Website · main / GitHub Pages</div>
     </div>
 
+    <nav class="quicklinks" aria-label="Quick access"><a href="map.html">🗺️ Map</a><a href="workspace/">🧭 Owner Workspace</a><a href="resources/">📐 Drawings &amp; Models</a><a href="site-operations.html">☑ Daily Checklist</a><a href="site-operations/coordination.html">⚠ Site Coordination</a><a href="site-operations/history.html">🗓 Progress Report</a></nav>
     <section class="grid" aria-label="JP Ecosystem pages">
       <a class="card" href="map.html">
         <div class="icon">🗺️</div>
         <h2>Project Map</h2>
-        <p>The existing coordinate-verified project map, preserved as a dedicated subpage.</p>
+        <p>See project locations, then jump directly into the project's drawing room, operations record and Drive-linked resources.</p>
         <ul><li>Project locations and status</li><li>Contractor filtering and search</li><li>Directions and project navigation</li></ul>
         <div class="go">Open project map →</div>
       </a>
 
       <a class="card" href="site-operations.html">
         <div class="icon">🏗️</div>
-        <h2>Daily Site Operations</h2>
-        <p>The detailed operational page for engineers and shareholders.</p>
-        <ul><li>Today's work and readiness gates</li><li>Materials, progress and blockers</li><li>3-day lookahead and field evidence</li><li>Drive-backed project files and engineering documents</li></ul>
-        <div class="go">Open site operations →</div>
+        <h2>Checklist for Today</h2>
+        <p>Write your own concise daily site reminders, by project. Historical communication questions are not added automatically.</p>
+        <ul><li>Empty personal checklist</li><li>Browser-only per-site daily entries</li><li>Copy the checklist for the team</li></ul>
+        <div class="go">Open daily checklist →</div>
       </a>
+
+      <a class="card" href="resources/"><div class="icon">📐</div><h2>Project Resources — Drawings &amp; Models</h2><p>Search the source-linked drawing room across projects, including DWG, SketchUp SKP, ETABS E2K, PDFs and controlled Google Drive folders.</p><ul><li>Find documents by project and format</li><li>Open originals in permission-gated Drive</li><li>Review provenance and revision limitations</li></ul><div class="go">Open drawings directory →</div></a>
 
       <a class="card" href="workspace/">
         <div class="icon">🧭</div>
@@ -54,6 +58,10 @@
         <ul><li>Task → correct source mapping</li><li>Live Daily Ops orientation</li><li>CSV / JSON / Sheets / Drive / PostgreSQL guide</li><li>Deployment and audit shortcuts</li></ul>
         <div class="go">Open workspace →</div>
       </a>
+
+      <a class="card" href="site-operations/coordination.html"><div class="icon">⚠️</div><h2>Site Coordination</h2><p>Pending holds, unresolved engineer questions and decisions requiring a responsible response. Not automatic construction instructions.</p><div class="go">Open coordination →</div></a>
+
+      <a class="card" href="site-operations/history.html"><div class="icon">🗓️</div><h2>Progress Report</h2><p>Read dated, source-attributed field observations and archived follow-ups, separated from completed-work certifications.</p><div class="go">Open progress report →</div></a>
 
       <a class="card" href="controls/memory-wall.html">
         <div class="icon">🧠</div>
@@ -94,7 +102,7 @@
     </section>
 
     <div class="notice"><b>Platform modules:</b> Operations Hub is the current live-experience point. Standard modules are JP AEC Project Controls (Primavera P6), JP AEC Cost Estimation, JP AEC Structural Analysis (OpenSees), and JP AEC CAD &amp; Drawings. Existing repository slugs remain unchanged for URL stability.</div>
-    <footer>JP AEC Platform · Operations Hub · governed branch preview</footer>
+    <footer>JP AEC Platform · Operations Hub · main website</footer>
   </main>
 </body>
 </html>
