@@ -635,6 +635,7 @@ function renderOverview(project) {
   const financialProgress = state.config.features.show_financial_progress ? progressBlock("Financial Progress", project.financial_progress_percent) : "";
   const projectDetailsLink = project.details_url ? `<a class="detail-link" href="${escapeHTML(project.details_url)}" target="_blank" rel="noopener">Project details</a>` : "";
   const operationsLink = project.legacy_project_code ? `<a class="detail-link" href="site-operations/project.html?project=${encodeURIComponent(project.legacy_project_code)}">Site operations</a>` : "";
+  const resourceLink = project.legacy_project_code ? `<a class="detail-link" href="resources/?project=${encodeURIComponent(project.legacy_project_code)}">📐 Drawings &amp; Models</a>` : `<a class="detail-link" href="resources/">Browse project resources</a>`;
   const directionsLink = canShow(project, "show_coordinates") ? `<a class="detail-link primary" href="${directionsURL(project)}" target="_blank" rel="noopener">Directions</a>` : "";
 
   elements.overviewPanel.innerHTML = `
@@ -646,7 +647,7 @@ function renderOverview(project) {
     ${dates ? `<div class="section-card"><h3>Dates</h3>${dates}</div>` : ""}
     ${updates ? `<div class="section-card"><h3>Public information</h3>${updates}</div>` : ""}
     ${(project.data_quality_status === "WARNING" || project.contractor_verification_status === "UNVERIFIED") ? `<div class="section-card quality-card"><h3>Verification status</h3>${quality}<p>Provisional information is shown transparently and should be replaced when verified records become available.</p></div>` : ""}
-    ${(directionsLink || projectDetailsLink || operationsLink) ? `<div class="section-card"><h3>Open</h3><div class="detail-actions">${directionsLink}${operationsLink}${projectDetailsLink}</div></div>` : ""}`;
+    ${(directionsLink || projectDetailsLink || operationsLink || resourceLink) ? `<div class="section-card"><h3>Open</h3><div class="detail-actions">${resourceLink}${operationsLink}${directionsLink}${projectDetailsLink}</div></div>` : ""}`;
 }
 
 function projectWorkItems(projectId) {
