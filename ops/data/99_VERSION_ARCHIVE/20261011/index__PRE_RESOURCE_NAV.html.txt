@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="JP AEC Platform operations hub for live project experience, site operations and engineering resources">
+  <title>JP AEC Operations Hub</title>
+  <style>
+    :root{--page:#f4f6f8;--panel:#fff;--text:#172033;--muted:#667085;--line:#dfe4ea;--accent:#175cd3;--soft:#eef4ff;--shadow:0 12px 30px rgba(15,23,42,.08);color-scheme:light}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--page);color:var(--text)}
+    .shell{max-width:1120px;margin:0 auto;padding:28px 18px 42px}.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+    .eyebrow{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}h1{font-size:clamp(30px,5vw,52px);line-height:1.04;margin:8px 0 10px}
+    .lead{max-width:760px;color:var(--muted);font-size:16px;line-height:1.6}.branch{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:700}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:30px}.card{display:flex;flex-direction:column;min-height:280px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow);text-decoration:none;color:inherit;transition:transform .15s ease,border-color .15s ease}
+    .card:hover{transform:translateY(-2px);border-color:#b2ccff}.icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:var(--soft);font-size:24px}
+    .card h2{font-size:24px;margin:18px 0 8px}.card p{color:var(--muted);line-height:1.55;margin:0}.card ul{padding-left:18px;color:var(--muted);line-height:1.7}.go{margin-top:auto;color:var(--accent);font-weight:800}
+    .architecture{margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}.architecture h3{margin:0 0 8px}.architecture p{margin:0;color:var(--muted);line-height:1.55}
+    .notice{margin-top:18px;border:1px solid #fedf89;background:#fff8e6;color:#7a2e0e;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.5}
+    footer{margin-top:24px;color:var(--muted);font-size:12px}@media(max-width:760px){.grid{grid-template-columns:1fr}.card{min-height:240px}.shell{padding:20px 12px 32px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="top">
+      <div>
+        <div class="eyebrow">JP AEC Platform</div>
+        <h1>JP AEC Operations Hub</h1>
+        <div class="lead">The live experience layer of the JP AEC Platform: real project locations, Slack-fed Daily Ops, readiness, progress, evidence and permission-gated engineering resources. Specialist planning, estimation, structural-analysis and CAD systems remain standardized modules around this hub.</div>
+      </div>
+      <div class="branch">Branch workspace · feature/daily-ops-current-work</div>
+    </div>
+
+    <section class="grid" aria-label="JP Ecosystem pages">
+      <a class="card" href="map.html">
+        <div class="icon">🗺️</div>
+        <h2>Project Map</h2>
+        <p>The existing coordinate-verified project map, preserved as a dedicated subpage.</p>
+        <ul><li>Project locations and status</li><li>Contractor filtering and search</li><li>Directions and project navigation</li></ul>
+        <div class="go">Open project map →</div>
+      </a>
+
+      <a class="card" href="site-operations.html">
+        <div class="icon">🏗️</div>
+        <h2>Daily Site Operations</h2>
+        <p>The detailed operational page for engineers and shareholders.</p>
+        <ul><li>Today's work and readiness gates</li><li>Materials, progress and blockers</li><li>3-day lookahead and field evidence</li><li>Drive-backed project files and engineering documents</li></ul>
+        <div class="go">Open site operations →</div>
+      </a>
+
+      <a class="card" href="workspace/">
+        <div class="icon">🧭</div>
+        <h2>Owner Workspace</h2>
+        <p>A plain-language control desk showing where to go, what owns each fact, and how the storage layers fit together.</p>
+        <ul><li>Task → correct source mapping</li><li>Live Daily Ops orientation</li><li>CSV / JSON / Sheets / Drive / PostgreSQL guide</li><li>Deployment and audit shortcuts</li></ul>
+        <div class="go">Open workspace →</div>
+      </a>
+
+      <a class="card" href="controls/memory-wall.html">
+        <div class="icon">🧠</div>
+        <h2>A9-CWO Memory Wall</h2>
+        <p>Pinned, printable reminders for Colab versioning, source capture and website publishing.</p>
+        <ul><li>Same Colab link, every revision</li><li>Snapshot → edit → verify → register</li><li>Daily Discord/Slack intake runbook</li></ul>
+        <div class="go">Open Memory Wall →</div>
+      </a>
+
+      <a class="card" href="controls/">
+        <div class="icon">🗼</div>
+        <h2>Control Towers &amp; Main Library</h2>
+        <p>Browse documented A9 control versions, the Main Library entry point and their owning Drive sources.</p>
+        <ul><li>Source-linked control directory</li><li>Machine-readable GitHub index</li><li>Migration and synchronization boundary</li></ul>
+        <div class="go">Open Control Towers →</div>
+      </a>
+
+      <a class="card" href="pending/">
+        <div class="icon">📌</div>
+        <h2>Pending Work</h2>
+        <p>Prepared proposals and deferred implementation work that must remain visible until explicitly resolved.</p>
+        <ul><li>Proposal links and stable IDs</li><li>Current status and next approval gate</li><li>No false completion claims</li></ul>
+        <div class="go">Open pending work →</div>
+      </a>
+
+      <a class="card" href="guide/">
+        <div class="icon">📘</div>
+        <h2>How To</h2>
+        <p>Step-by-step instructions for project edits, Daily Ops, files, Sheets, publishing, recovery and future database migration.</p>
+        <ul><li>What we built and why</li><li>Where to edit safely</li><li>Why Neon is optional today</li><li>A9 recovery vocabulary</li></ul>
+        <div class="go">Open How-To guide →</div>
+      </a>
+    </section>
+
+    <section class="architecture">
+      <h3>Machine-first architecture</h3>
+      <p>Google Drive is the canonical source/evidence warehouse. GitHub is the canonical structured-data/control warehouse. PostgreSQL-compatible SQL text defines the relationship contract; CSV/JSON hold current values; JSONL holds history. The current GitHub Pages runtime does <b>not</b> require a live Neon/PostgreSQL server. Sheets, Pages and Slack remain downstream projections or controlled input surfaces.</p>
+    </section>
+
+    <div class="notice"><b>Platform modules:</b> Operations Hub is the current live-experience point. Standard modules are JP AEC Project Controls (Primavera P6), JP AEC Cost Estimation, JP AEC Structural Analysis (OpenSees), and JP AEC CAD &amp; Drawings. Existing repository slugs remain unchanged for URL stability.</div>
+    <footer>JP AEC Platform · Operations Hub · governed branch preview</footer>
+  </main>
+</body>
+</html>
