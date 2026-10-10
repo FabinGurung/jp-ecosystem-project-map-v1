@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="JP AEC Operations Workspace: projects, Daily Ops, data sources, specialist modules and guides in one directory.">
+  <title>JP AEC Workspace · Tools, projects & guides</title>
+  <link rel="stylesheet" href="./workspace.css?v=1">
+</head>
+<body>
+<a class="skip" href="#main">Skip to resources</a>
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="brand" href="../"><span class="mark">JP</span><span><strong>JP AEC Operations</strong><small>WORKSPACE · PROJECTS · SOURCES</small></span></a>
+    <nav aria-label="Workspace links"><a href="../site-operations.html">Site Operations</a><a href="../map.html">Project Map</a><a href="../controls/">Control Towers</a><a href="../pending/">Pending Work</a><a href="../guide/">Guide</a></nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Your construction operations system, in one place</p>
+      <h1>JP AEC Workspace</h1>
+      <p class="lede">Find the right project, source, specialist module or guide without needing to know the GitHub repository tree.</p>
+      <p class="metadata"><span id="total-count">—</span> resources · Directory updated <span id="updated">—</span></p>
+      <div class="actions"><button class="button" id="copy-link" type="button">Copy workspace link</button><a class="button secondary" href="https://github.com/FabinGurung/JP_Communication-Command-Centre-and-Resource-Hub/blob/feature/daily-ops-current-work/workspace/links.json">Edit directory in GitHub</a></div>
+      <p id="share-status" class="metadata" role="status" aria-live="polite"></p>
+    </div>
+    <aside class="status-box" id="database-status" aria-labelledby="connection-title">
+      <span class="badge verified">CURRENT · FILE-FIRST RUNTIME</span>
+      <h2 id="connection-title">A live Neon/PostgreSQL server is not required today.</h2>
+      <p>The deployed Pages site reads CSV, JSON and JSONL. Google Drive owns source/evidence files; Sheets/Slack are controlled human surfaces. The SQL file is currently a relationship contract, not a mandatory live database connection.</p>
+      <a href="../guide/15-pages/">Open the storage/database reference →</a>
+    </aside>
+  </section>
+
+  <section class="daily-routine" aria-labelledby="routine-title">
+    <h2 id="routine-title">A simple daily routine</h2>
+    <ol>
+      <li><strong>Field reports</strong>Read Slack/site evidence and keep unsupported or ambiguous facts unresolved.</li>
+      <li><strong>Reconcile once</strong>Update canonical Daily Ops current state + append-only history; never convert stock into consumption by assumption.</li>
+      <li><strong>Review & act</strong>Use Site Operations and project pages, send concise follow-ups, then verify Sheets/Pages projections.</li>
+    </ol>
+  </section>
+
+  <section class="live-projects" aria-labelledby="live-projects-title">
+    <div class="live-projects-head">
+      <div>
+        <p class="eyebrow">Live from canonical project + Daily Ops data</p>
+        <h2 id="live-projects-title">Current project status</h2>
+        <p class="metadata">Generated in the browser from <code>projects.csv</code> + <code>ops/data/current-works.json</code>. This is a read-only view; it does not create a new source of truth.</p>
+      </div>
+      <a class="button secondary" href="../site-operations.html">Open full Site Operations</a>
+    </div>
+    <div class="live-stats" id="live-project-summary" aria-live="polite">
+      <article><strong>—</strong><span>Daily Ops projects</span></article>
+      <article><strong>—</strong><span>Needs input</span></article>
+      <article><strong>—</strong><span>Hold / blocked</span></article>
+      <article><strong>—</strong><span>Latest Ops date</span></article>
+    </div>
+    <p id="live-project-status" class="metadata" role="status" aria-live="polite">Loading canonical project status…</p>
+    <div id="live-project-grid" class="project-grid"></div>
+    <div class="fallback-note">
+      <strong>Fallback navigation remains available.</strong>
+      If live project data cannot load, use the static <a href="#group-projects">Active project pages</a> directory below. That registry remains intentionally independent.
+    </div>
+  </section>
+
+  <section class="control-console" aria-labelledby="health-title">
+    <div class="console-block">
+      <div class="section-heading">
+        <div><p class="eyebrow">System health & ownership</p><h2 id="health-title">What is connected right now?</h2></div>
+        <span class="badge verified" id="health-overall">CHECKING</span>
+      </div>
+      <p class="metadata">Health means “the expected source/registry is reachable and structurally usable from this public Workspace.” It does not imply private-provider authentication or write permission.</p>
+      <div id="health-grid" class="health-grid" aria-live="polite"></div>
+    </div>
+
+    <div class="console-block" aria-labelledby="edit-route-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">Guided ownership routing</p><h2 id="edit-route-title">What do I edit?</h2></div>
+      </div>
+      <label class="route-search">Describe what you want to change
+        <input id="route-search" type="search" placeholder="Try schedule, project status, structural report, Drive file…" autocomplete="off">
+      </label>
+      <p id="route-count" class="metadata" role="status" aria-live="polite"></p>
+      <div id="route-grid" class="route-grid"></div>
+    </div>
+  </section>
+
+  <section class="module-console" aria-labelledby="module-title">
+    <div class="section-heading">
+      <div><p class="eyebrow">Normalized specialist ownership</p><h2 id="module-title">Which repository owns which capability?</h2></div>
+      <a class="button secondary" href="./modules.json">Open module registry</a>
+    </div>
+    <p class="metadata">Rendered from <code>workspace/modules.json</code>. The existing static resource directory remains available below as fallback/navigation.</p>
+    <div id="module-grid" class="module-grid"></div>
+  </section>
+
+  <div class="toolbar" id="filters">
+    <label>Find a resource<input id="search" type="search" placeholder="Try Narayani, Daily Ops, scheduling, PostgreSQL…" autocomplete="off"></label>
+    <label>Category<select id="category"><option value="">All categories</option></select></label>
+    <label>Status<select id="status"><option value="">All statuses</option></select></label>
+    <label>Audience<select id="audience"><option value="">All audiences</option></select></label>
+  </div>
+
+  <nav class="directory-nav" id="directory-nav" aria-label="Resource categories"></nav>
+  <p id="result-count" class="count" role="status" aria-live="polite"></p>
+  <p id="load-status" class="metadata" role="status"></p>
+  <div id="directory"></div>
+
+  <section class="architecture">
+    <h2>One fact, one owner</h2>
+    <div class="architecture-grid">
+      <article><strong>Google Drive</strong><span>Real source/evidence files and permissions</span></article>
+      <article><strong>GitHub CSV/JSON</strong><span>Canonical structured current values</span></article>
+      <article><strong>JSONL</strong><span>Append-only operational history</span></article>
+      <article><strong>SQL text</strong><span>Relationship and constraint contract</span></article>
+      <article><strong>Sheets / Slack</strong><span>Human input, review and downstream projection</span></article>
+      <article><strong>GitHub Pages</strong><span>Human-facing read/presentation layer</span></article>
+    </div>
+  </section>
+
+  <footer>JP AEC Operations Workspace · Phase 4 live-project integration · public-safe read-only control surface</footer>
+</main>
+<script src="./workspace.js?v=1" defer></script>
+</body>
+</html>
