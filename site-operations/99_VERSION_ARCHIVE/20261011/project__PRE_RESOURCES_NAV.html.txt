@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="JP AEC Operations Hub Daily Site Operations project detail">
+  <title>Site Evidence Snapshot · JP AEC</title>
+  <style>
+    :root{--bg:#f4f6f8;--panel:#fff;--text:#172033;--muted:#667085;--line:#e1e6ec;--blue:#175cd3;--green:#067647;--amber:#b54708;--red:#b42318;--soft:#eef4ff;--shadow:0 8px 24px rgba(15,23,42,.07)}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}a{color:inherit}
+    .shell{max-width:1100px;margin:auto;padding:16px}.nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.nav a{text-decoration:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:750}.nav a.active{background:var(--soft);color:var(--blue);border-color:#b2ccff}
+    .hero,.section{background:var(--panel);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow)}.hero{padding:18px}.section{padding:15px}.eyebrow{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:.06em;text-transform:uppercase}h1{font-size:clamp(24px,5vw,38px);margin:4px 0}.meta{font-size:13px;color:var(--muted)}.hero-row{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap}
+    .badge{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800;background:#f8fafc}.badge[data-tone="red"]{background:#fef3f2;border-color:#fecdca;color:var(--red)}.badge[data-tone="amber"]{background:#fffaeb;border-color:#fedf89;color:var(--amber)}.badge[data-tone="green"]{background:#ecfdf3;border-color:#abefc6;color:var(--green)}
+    .focus{margin-top:13px;padding:11px 12px;border-radius:11px;background:#f8fafc;border:1px solid var(--line);font-size:13px;line-height:1.45}.grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(270px,.8fr);gap:14px;margin-top:14px}.stack{display:grid;gap:14px}.section h2{font-size:16px;margin:0 0 10px}.empty{border:1px dashed #cfd6df;border-radius:11px;padding:14px;color:var(--muted);font-size:13px;background:#fbfcfd}
+    .list{display:grid;gap:9px}.row{padding-bottom:9px;border-bottom:1px solid #edf0f3;font-size:13px;line-height:1.45}.row:last-child{border-bottom:0;padding-bottom:0}.row b{display:block;margin-bottom:2px}.sub{color:var(--muted);font-size:11px}.work{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:9px}.work-head{display:flex;justify-content:space-between;gap:10px}.gate-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.gate{display:flex;justify-content:space-between;gap:8px;background:#f8fafc;border-radius:8px;padding:7px 8px;font-size:12px}.gate strong{font-size:11px}.pill{border:1px solid var(--line);border-radius:999px;padding:3px 7px;font-size:10px;font-weight:800;white-space:nowrap}.evidence{display:grid;gap:7px}.evidence a{text-decoration:none;color:var(--blue);border:1px solid var(--line);border-radius:9px;padding:8px 9px;background:#fff;font-size:12px}
+    .resource-list{display:grid;gap:9px}.resource-card{border:1px solid var(--line);border-radius:11px;padding:11px;background:#fbfcfd}.resource-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.resource-type{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}.resource-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.resource-actions a{text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:11px;font-weight:800;background:#fff;color:var(--blue)}.resource-note{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.4}.resource-intro{padding:11px 13px;border:1px solid #c3d8cd;background:#f0f7f2;color:#295e49;border-radius:10px;font-size:12px;line-height:1.5}.resource-group{margin-top:15px}.resource-group h3{font-size:14px;margin:0 0 9px;color:#254d42;display:flex;gap:8px;align-items:center}.resource-group h3 small{font:700 11px system-ui;background:#e9f3ee;padding:2px 7px;border-radius:20px}.resource-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px}.resource-card{background:#fff}.historical-group{margin-top:17px;border:1px dashed #a8b4ad;border-radius:12px;padding:10px 12px;background:#fbfaf5}.historical-group summary{font-size:12px;font-weight:750;cursor:pointer;color:#745d32}.historical-group .resource-cards{margin-top:12px}
+    .footer{padding:17px 2px;color:var(--muted);font-size:11px;line-height:1.5}@media(max-width:800px){.grid{grid-template-columns:1fr}.gate-grid{grid-template-columns:1fr}.shell{padding:11px}}
+ 
+/* FIELD BRIEF v2.1 — hero-first editorial design */
+:root{--bg:#f5f6f0;--panel:#fffefa;--text:#22392f;--muted:#4c6256;--line:#dfe8de;--blue:#146e58;--green:#2b674a;--soft:#e8f3e9;--shadow:0 6px 26px #123b260b}
+body{background:radial-gradient(ellipse at 88% 0,#e2f1e6 0,transparent 34%),var(--bg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.shell{max-width:1200px;padding:20px}.nav{padding:2px 0 15px}.nav a{font-size:12px;background:#fff;border-color:#d7e3d8;color:#355c4b;padding:9px 12px}.nav a:hover{background:#e8f3e9}
+.hero{position:relative;overflow:hidden;background:linear-gradient(118deg,#173c35,#29634d);border:none;border-radius:24px;color:#fff;padding:33px 35px;box-shadow:0 15px 35px #113b3130;min-height:180px}
+.hero:after{content:"";position:absolute;right:-90px;bottom:-210px;width:390px;height:390px;border:1px solid #ffffff24;border-radius:50%;box-shadow:0 0 0 60px #ffffff0c;pointer-events:none}
+.hero h1{font:700 clamp(29px,4vw,49px)/1.12 Georgia,serif;letter-spacing:-.025em;position:relative;z-index:1}
+.hero .eyebrow{color:#c4e9d6}.hero .meta{color:#def0e1;font-size:12px;max-width:580px}
+.hero .focus{border:1px solid #ffffff41;background:#ffffff16;color:#fff;font-size:14px;max-width:820px;padding:13px 16px;line-height:1.55;position:relative;z-index:1}
+.hero .badge{background:#fff;color:#235342;border-color:#d9e8d9}.record-hint{font-size:11px;color:#e0f0e3;margin-top:11px;position:relative;z-index:1}
+.hero-icon{position:absolute;right:38px;top:26px;font-size:74px;opacity:.25;transform:rotate(8deg);pointer-events:none}
+.quick-nav{display:flex;flex-wrap:wrap;gap:9px;margin:17px 0 18px}.quick-nav a{text-decoration:none;border:1px solid #d5e4d8;padding:9px 13px;background:#fff;border-radius:24px;font-weight:750;font-size:12px;color:#255d49}
+.quick-nav a:hover{background:#e5f4e9}
+.field-lead{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr);gap:15px}.section{padding:21px;border-radius:17px;box-shadow:var(--shadow)}
+.section-heading{display:flex;align-items:center;gap:13px;margin-bottom:11px}.section-symbol{font-size:27px;display:grid;place-items:center;width:49px;height:49px;border-radius:14px;background:#e9f3e9}
+.section-heading h2{font:700 23px/1.2 Georgia,serif;margin:2px 0}.section .eyebrow{font-size:10px;color:#365e4d}
+.section-intro{font-size:12px;line-height:1.6;color:var(--muted);margin:2px 0 15px}.issue-panel{background:#fffdf7}.issue-panel .section-symbol{background:#fff1da}
+.issue-panel .row{background:#fff;padding:11px;border:1px solid #eee7da;border-radius:11px;margin-bottom:8px;line-height:1.55}
+.issue-panel .row b{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#99692c}.small-print{font-size:11px;color:#6f542c;line-height:1.6;margin-top:11px}
+.docs-section{margin-top:15px}.resource-optional{background:#f8faf6;border:1px solid #dfe8dd;border-radius:12px;padding:10px 13px}.resource-optional summary{cursor:pointer;list-style:none;color:#2a6250;font-weight:750;font-size:13px}.resource-optional summary::-webkit-details-marker{display:none}.resource-optional summary::after{content:" +";float:right;font-size:17px}.resource-optional[open] summary::after{content:" −"}.resource-optional .resource-cards{margin-top:12px}.docs-section .resource-group h3{font:700 17px Georgia,serif;color:#245544}.docs-section .resource-cards{grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:11px}
+.docs-section .resource-card{border:1px solid #e1e8de;box-shadow:0 5px 16px #23503d09;padding:14px}.docs-section .resource-card b{font-size:13px;line-height:1.45}
+.docs-section .resource-actions a{font-size:12px;color:#176f54}.docs-section .resource-type{font-size:10px}
+.work{border:1px solid #d6e3d7;background:#fafffb}.work-head b{line-height:1.6;font-size:13px}.gate-grid{grid-template-columns:1fr 1fr}
+.gate{background:#f0f6ef;min-height:32px}.gate strong{color:#486b58}.pill{background:#edf4ec}
+.secondary-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:15px}.detail-section{padding:0;align-self:start;min-width:0}.detail-section summary{list-style:none;cursor:pointer;padding:21px 19px;font-weight:800;font:700 19px Georgia,serif}.detail-section summary::-webkit-details-marker{display:none}
+.detail-section summary::after{content:"+";float:right;color:#277358;font:700 20px system-ui}.detail-section[open] summary::after{content:"–"}
+.detail-section summary small{display:block;font:400 11px/1.6 system-ui;margin-top:4px;color:var(--muted)}.detail-content{padding:3px 19px 19px}
+.footer{margin-top:19px;text-align:center}
+@media(max-width:820px){.field-lead,.secondary-grid{grid-template-columns:1fr}.hero-icon{right:5px;opacity:.16}.shell{padding:12px}.hero{padding:27px 21px;border-radius:19px}.quick-nav{gap:6px}.quick-nav a{font-size:11px;padding:8px 10px}.section{padding:17px}.docs-section .resource-cards{grid-template-columns:1fr 1fr}}
+@media(max-width:470px){.docs-section .resource-cards{grid-template-columns:minmax(0,1fr)}.hero h1{font-size:33px}.hero .focus{font-size:12px}.section-heading h2{font-size:20px}.section-symbol{width:42px;height:42px;font-size:23px}}
+
+/* Avoid min-content expansion on compact phone screens. */
+.shell,.field-lead,.secondary-grid,.section,.docs-section,.resource-group,.resource-card,.resource-head,.work,.work-head{min-width:0;max-width:100%}
+.resource-card,.resource-head,.work-head,.row{overflow-wrap:anywhere}
+@media(max-width:820px){.field-lead,.secondary-grid{grid-template-columns:minmax(0,1fr)}.docs-section .resource-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.section{max-width:100%}}
+@media(max-width:470px){.docs-section .resource-cards{grid-template-columns:minmax(0,1fr)}.shell{padding-inline:10px}}
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Nunito+Sans:wght@400;500;600;700;800&display=swap');
+:root{--ui:'Nunito Sans',Verdana,sans-serif;--display:'Fraunces',Georgia,serif;--text:#263b32;--muted:#486254;--panel:#fffefa;--line:#dde8dd;--bg:#f7f7f0}
+html,body{font-family:var(--ui)}.hero h1,.section-heading h2,.resource-group h3,.compact-archive summary{font-family:var(--display)}
+.nav a,.quick-nav a{font-family:var(--ui);font-weight:800}.hero{padding:30px 34px;min-height:165px}.hero h1{font-size:clamp(31px,4.5vw,51px)}
+.hero .focus{font-family:var(--ui);font-weight:650}
+.day-workboard,.issue-panel{margin-top:17px}.day-workboard{background:#fffefa}.issue-panel{background:#fff9f0}
+.day-stack{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}.day-panel{border:1px solid #dce7dd;background:#fff;border-radius:15px;overflow:hidden}
+.day-panel[data-bucket="today"]{border-color:#a3cbb4;box-shadow:0 5px 20px #245e3f0c}
+.day-panel header{display:flex;flex-wrap:wrap;gap:9px;align-items:center;justify-content:space-between;padding:14px 17px;background:#f3f6ef}
+.day-panel[data-bucket="today"] header{background:#eaf3e9}.day-panel header h3{font:650 19px/1.25 var(--display);margin:0;color:#215841}
+.day-panel header p{margin:2px 0 0;font-size:12px;color:#526e59}.day-panel header .count{color:#41604c;font-weight:850;font-size:11px}
+.table-wrap{overflow-x:auto}.schedule-table,.issues-table{border-collapse:collapse;width:100%;font-size:13px;table-layout:fixed}
+.schedule-table th,.issues-table th{text-align:left;font:800 11px var(--ui);text-transform:uppercase;letter-spacing:.06em;color:#5a7865;background:#fafbf8;padding:10px 13px;border-bottom:1px solid #dce6dd}
+.schedule-table td,.issues-table td{padding:12px 13px;vertical-align:top;border-bottom:1px solid #e7ece5;line-height:1.55}
+.schedule-table tr:last-child td,.issues-table tr:last-child td{border-bottom:0}
+.schedule-table th:nth-child(1){width:20%}.schedule-table th:nth-child(3){width:20%}.schedule-table th:nth-child(4){width:11%}
+.issues-table th:nth-child(1){width:18%}.issues-table th:nth-child(3){width:21%}.issues-table th:nth-child(4){width:11%}
+.trade{display:inline-flex;gap:5px;align-items:center;font-weight:800;color:#225a45;font-size:12px}
+.row-state{display:inline-block;font-size:11px;font-weight:800;padding:4px 8px;border-radius:9px;background:#eff3ed;color:#385f4d}
+.row-state[data-danger="true"]{background:#fff0e9;color:#934b32}
+.source-link{text-decoration:none;color:#17705a;font-size:12px;font-weight:800}.source-link:hover{text-decoration:underline}
+.no-report{padding:17px;color:#576f60;font-size:13px;background:#fafbf8}
+.queue-summary{max-width:100%;overflow-wrap:anywhere}
+.queue-summary details{margin-top:6px;font-size:12px;color:#5c6b60}.queue-summary details summary{cursor:pointer;color:#245e49}
+.compact-archive{margin-top:16px;background:#fafbf7;padding:0}.compact-archive>summary{cursor:pointer;padding:18px 21px;font-size:19px;font-weight:650;list-style:none}.compact-archive summary::-webkit-details-marker{display:none}
+.compact-archive summary small{font:500 12px var(--ui);display:block;margin-top:4px;color:#52705d}
+.compact-archive .archive-inner{padding:0 22px 22px}.compact-archive h3{margin:19px 0 8px;font:700 15px var(--ui)}.compact-archive .row{background:#fff;border-radius:9px;margin:5px 0;padding:10px}
+.docs-section{margin-top:16px}.issue-panel .row{background:#fff}
+@media(max-width:680px){.schedule-table,.issues-table{font-size:12px}.schedule-table th,.issues-table th,.schedule-table td,.issues-table td{padding:9px 8px}
+.schedule-table th:nth-child(1),.issues-table th:nth-child(1){width:25%}.schedule-table th:nth-child(3),.issues-table th:nth-child(3){width:23%}.schedule-table th:nth-child(4),.issues-table th:nth-child(4){width:12%}
+.day-panel header{padding:12px}.row-state{font-size:10px;padding:3px 5px}.trade{font-size:11px}}
+
+
+@media(max-width:640px){
+  .schedule-table thead,.issues-table thead{display:none}
+  .schedule-table,.issues-table,.schedule-table tbody,.issues-table tbody{display:block;width:100%;table-layout:auto}
+  .schedule-table tr,.issues-table tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 10px;border:1px solid #dce8de;border-radius:12px;padding:12px 13px;margin:10px;background:#fffefa}
+  .schedule-table td,.issues-table td{display:block;width:auto!important;min-width:0;padding:0!important;border:0!important;font-size:13px;line-height:1.58}
+  .schedule-table td:nth-child(1),.issues-table td:nth-child(1){grid-column:1;grid-row:1;align-self:center}
+  .schedule-table td:nth-child(2),.issues-table td:nth-child(2){grid-column:1/-1;grid-row:2}
+  .schedule-table td:nth-child(3),.issues-table td:nth-child(3){grid-column:2;grid-row:1;align-self:center;justify-self:end;text-align:right}
+  .schedule-table td:nth-child(4),.issues-table td:nth-child(4){grid-column:1/-1;grid-row:3;padding-top:7px!important;border-top:1px solid #e4ebe4!important}
+  .schedule-table td:nth-child(2){font-weight:600}
+  .trade{font-size:12px}.row-state{display:inline-block;font-size:11px;white-space:normal;max-width:116px;text-align:center}
+  .issues-table td:nth-child(2) strong{font-size:14px}.issues-table td:nth-child(2) details{font-size:13px}
+}
+
+  </style>
+</head>
+<body>
+<div class="shell">
+  <nav class="nav" aria-label="Main navigation">
+    <a href="../site-operations.html">← Daily Checklist</a>
+    <a id="coordination-page-link" href="coordination.html">Site Coordination</a>
+    <a id="schedule-page-link" href="schedule.html">Work &amp; Holds</a>
+    <a id="question-page-link" href="questions.html">Engineer Questions</a>
+    <a href="history.html" id="history-page-link">Progress Report</a>
+    <a href="../map.html">🗺️ Map</a>
+    <a href="../workspace/">Workspace</a>
+    <a href="../controls/archive-formats.html">Archive policy</a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-row">
+      <div><div class="eyebrow">SITE FIELD BRIEF · LATEST ADMITTED RECORD</div><h1 id="name">Loading…</h1><div class="meta" id="meta"></div></div>
+      <div><span class="badge" id="attention">Loading</span></div>
+    </div>
+    <div class="focus" id="focus">Loading site focus…</div><div class="record-hint" id="record-hint">Verify the record date before work proceeds.</div><div class="hero-icon" aria-hidden="true">🏗️</div>
+  </section>
+
+  <nav class="quick-nav" aria-label="Project field briefing">
+  <a href="#field-plan">🗓️ Evidence snapshot (not work order)</a>
+  <a href="#decision-list">⚠️ Holds &amp; decisions</a>
+  <a href="#drawings">📐 Drawings</a>
+</nav>
+<main>
+  <section class="section day-workboard" id="field-plan" aria-labelledby="day-board-title">
+    <div class="section-heading"><span class="section-symbol" aria-hidden="true">👷</span><div><div class="eyebrow">Site planning · reported, not assumed</div><h2 id="day-board-title">Past reports · Open questions · Plan status</h2></div></div>
+    <p class="section-intro">This is a historical evidence snapshot, not an approved crew schedule. Go to Work &amp; Holds for scheduling and on-hold items, or Engineer Questions to prepare a response. An engineer must approve actual execution tasks.</p>
+    <div id="work" aria-live="polite"></div>
+  </section>
+  <section class="section issue-panel" id="decision-list">
+    <div class="section-heading"><span class="section-symbol" aria-hidden="true">🚧</span><div><div class="eyebrow">Action queue</div><h2>Defects, decisions and work holds</h2></div></div>
+    <p class="section-intro">Only a recorded engineering HOLD is a hold. Other unresolved items are questions awaiting the relevant engineer or trade lead—not a blanket stop on the whole site.</p>
+    <div id="blockers"></div>
+  </section>
+  <section class="section docs-section" id="drawings">
+    <div class="section-heading"><span class="section-symbol" aria-hidden="true">📐</span><div><div class="eyebrow">Drawing room</div><h2>Drawings &amp; models</h2></div></div>
+    <p class="section-intro">Controlled Drive links, with primary architecture and structure first. Technical revision/approval must be confirmed independently.</p>
+    <div id="resources"></div>
+  </section>
+  <details id="historical-records" class="section compact-archive">
+    <summary>📚 Older reports and evidence <small>Open only when auditing or resolving a question</small></summary>
+    <div class="archive-inner"><h3>Previously reported progress</h3><div id="progress"></div>
+    <h3>Materials and historical stock/usage</h3><div id="materials"></div>
+    <h3>Older lookahead suggestions</h3><div id="lookahead"></div>
+    <h3>Raw evidence links</h3><div id="evidence"></div>
+    <p><a href="../ops/control/field-trade-taxonomy.json" target="_blank" rel="noopener">View 21 construction work categories ↗</a></p></div>
+  </details>
+</main>
+<details class="site-help" style="margin-top:16px;font-size:12px;color:#56766a"><summary style="cursor:pointer;font-weight:750">Help &amp; full sources</summary><p><a href="../guide/">How to use the platform</a> · <a href="../ops/data/project-resources.json">Resource registry</a> · <a href="../ops/events/daily-ops-events.jsonl">Event history</a></p></details>
+<div class="footer">Verified provider facts only. Readiness and execution are separate: READY does not mean DONE. <a href="../site-operations.html">Back to Site Operations dashboard</a>.</div>
+</div>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=v=>String(v==null?"":v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+const label=v=>String(v||"UNSET").replaceAll("_"," ");
+const params=new URLSearchParams(location.search);
+function empty(t){return '<div class="empty">'+esc(t)+'</div>';}
+function attention(project){
+  const o=project.daily_ops||{}, b=o.blockers||[], c=o.conflict_state;
+  if(["HOLD","NOT_READY"].includes(o.overall_readiness)) return ["Engineering hold","red"];
+  if(c==="UNRESOLVED") return ["Data conflict / verify","amber"];
+  if(b.length) return ["Needs attention","amber"];
+  if((o.progress||[]).some(x=>x.status==="ONGOING")) return ["Active","green"];
+  if(o.overall_readiness==="UNSET") return ["Awaiting update","amber"];
+  return ["Current","green"];
+}
+function focus(project){
+  const o=project.daily_ops||{};
+  if((o.blockers||[]).length) return o.blockers[0].blocker||"Open blocker needs follow-up.";
+  const ongoing=(o.progress||[]).find(x=>x.status==="ONGOING");
+  if(ongoing) return ongoing.note||ongoing.activity||"Work is in progress.";
+  const latest=(o.progress||[])[0];
+  if(latest) return latest.note||latest.activity||"Latest progress is recorded.";
+  const mat=(o.materials||[])[0];
+  if(mat) return [mat.material_name||mat.material,mat.note].filter(Boolean).join(" — ");
+  return "No new verified site fact is available yet. Use the Slack tracker to submit the next update.";
+}
+function rows(id,items,none,mapper){
+  const root=$(id); if(!items.length){root.innerHTML=empty(none);return;}
+  root.innerHTML='<div class="list">'+items.map(x=>{const m=mapper(x);return '<div class="row"><b>'+esc(m[0])+'</b><div>'+esc(m[1]||"—")+'</div>'+(m[2]?'<div class="sub">'+esc(m[2])+'</div>':"")+'</div>';}).join("")+'</div>';
+}
+function tradeLabel(id, catalog) {
+  const t=(catalog.trades||[]).find(x=>x.id===id);
+  return t ? '<span class="trade"><span aria-hidden="true">'+esc(t.emoji)+'</span>'+esc(t.name)+'</span>' : '<span class="trade">'+esc(id)+'</span>';
+}
+function stageLabel(v) {
+  const m={REPORTED_INFORMATION:"Reported / not quantity-verified",REPORTED_ONGOING:"Reported ongoing",ISSUE_RAISED:"Issue raised",NEEDS_REPORT:"Engineer reply needed",RECONFIRM_PREVIOUS_REPORT:"Reconfirm prior activity",NEEDS_ENGINEER_DECISION:"Engineer decision",NEEDS_DECISION:"Decision needed",NEEDS_SITE_INSPECTION:"Inspect on site",NEEDS_CORRECTION:"Correction needed",WRONG_SITE_REVIEW:"Verify site identity",ENGINEER_HOLD:"HOLD — engineer release"};
+  return m[v]||"Confirmation needed";
+}
+function dayTable(bucket,rows,catalog,date){
+ const title={yesterday:"Reported activity",today:"Questions to verify",tomorrow:"Next-day plan status"}[bucket];
+ const desc={yesterday:"Reported on the date; not all work was verified",today:"Open workstreams to confirm—not assigned work",tomorrow:"Plans require an engineer's dated reply"}[bucket];
+ const body=rows.length?'<div class="table-wrap"><table class="schedule-table"><thead><tr><th scope="col">Trade</th><th scope="col">Specific work / question</th><th scope="col">State</th><th scope="col">Evidence</th></tr></thead><tbody>'+rows.map(x=>'<tr><td>'+tradeLabel(x.trade_id,catalog)+'</td><td>'+esc(x.summary)+'</td><td><span class="row-state" data-danger="'+(x.status==="ENGINEER_HOLD")+'">'+esc(stageLabel(x.status))+'</span></td><td>'+(x.source_ref?'<a class="source-link" href="'+esc(x.source_ref)+'" target="_blank" rel="noopener noreferrer">Source ↗</a>':'Not yet')+'</td></tr>').join("")+'</tbody></table></div>':
+ '<div class="no-report">'+(bucket==="tomorrow"?"No dated engineer-approved next-day plan has been received. Request work, trade, location, crew only if assigned, and any hold for "+esc(date)+".":bucket==="yesterday"?"No source-confirmed work/result has been entered for this date. This does not mean no work occurred.":"A project work review has not been admitted for this date.")+'</div>';
+ return '<section class="day-panel" data-bucket="'+bucket+'"><header><div><h3>'+({yesterday:"↩ ",today:"👷 ",tomorrow:"↪ "}[bucket])+title+' · '+esc(date)+'</h3><p>'+esc(desc)+'</p></div><span class="count">'+rows.length+' sourced item'+(rows.length===1?'':'s')+'</span></header>'+body+'</section>';
+}
+function renderBoard(record,catalog){
+ const root=$("work");
+ if(!record){root.innerHTML=empty("Three-day trade record unavailable. Do not infer a schedule.");return;}
+ root.innerHTML='<div class="day-stack">'+dayTable("yesterday",record.yesterday||[],catalog,record.date_yesterday||"2026-10-08")+dayTable("today",record.today||[],catalog,record.date_today||"2026-10-09")+dayTable("tomorrow",record.tomorrow||[],catalog,record.date_tomorrow||"2026-10-10")+'</div>';
+}
+function issueTrade(text){
+ const t=text.toLowerCase();
+ if(/waterproof|leak|seepage/.test(t))return "WATERPROOF";
+ if(/electric|wiring|board/.test(t))return "ELECTRICAL";
+ if(/pipe|plumb|toilet/.test(t))return "PLUMBING";
+ if(/rebar|stirrup|shear|anchorage|cf1|cantilever/.test(t))return "REBAR";
+ if(/shutter|centring|ply/.test(t))return "FORMWORK";
+ if(/plaster/.test(t))return "PLASTER";
+ if(/brick|lintel/.test(t))return "BRICKWORK";
+ if(/upvc|door|window/.test(t))return "UPVC";
+ if(/cement|stock|material|bill|ordered/.test(t))return "PROCUREMENT";
+ return "ENGINEERING";
+}
+function shortIssue(text){
+ const t=String(text||"");
+ const m=[[/top.water leakage/i,"Top-water leakage / cause unknown"],[/toilet door height/i,"Toilet door height / held plaster"],[/kitchen bottom.slab seepage/i,"Kitchen seepage inspection"],[/electrical wiring\/batta/i,"Electrical work awaiting ceiling decision"],[/embedded bamboo|bamboo scaffolding/i,"Embedded bamboo and wall quality"],[/crack\/anchorage|visible crack/i,"Crack and anchorage review"],[/CF1 chair\/stirrup/i,"CF1 chair / stirrup dimensions"],[/provider statements conflict/i,"Footing OPC quantities conflict"],[/brick quantity/i,"Brick quantity and bill"],[/second.floor slab materials/i,"Second-floor material receipt"],[/cantilever confirmation/i,"Cantilever / stirrup checks"],[/external pipe.concealment/i,"External plumbing route / wall detail"]];
+ for(const [rx,title] of m)if(rx.test(t))return title;
+ const first=t.split(/[.;]/)[0];return first.length>97?first.slice(0,94)+"…":first;
+}
+function renderIssues(project,catalog){
+ const root=$("blockers"),o=project.daily_ops||{},items=o.blockers||[];
+ const hold=["HOLD","NOT_READY"].includes(o.overall_readiness);
+ let info=hold?'<p class="row-state" data-danger="true">⚠ Engineering/site HOLD recorded for affected work. Do not infer approval to resume.</p>':'';
+ if(!items.length){root.innerHTML=info+'<div class="no-report">No open issue is registered; this does not certify unrestricted work readiness.</div>';return;}
+ root.innerHTML=info+'<div class="table-wrap"><table class="issues-table"><thead><tr><th scope="col">Trade</th><th scope="col">Issue / answer needed</th><th scope="col">Decision state</th><th scope="col">Evidence</th></tr></thead><tbody>'+
+ items.map(x=>{const raw=x.blocker||x.title||"",source=(x.source_refs||[]).find(y=>typeof y==="string"&&/^https:\/\//.test(y));
+ return '<tr><td>'+tradeLabel(issueTrade(raw),catalog)+'</td><td class="queue-summary"><strong>'+esc(shortIssue(raw))+'</strong><details><summary>Context &amp; follow-up</summary>'+esc(raw)+(x.responsible?'<p>Response role: '+esc(x.responsible)+'</p>':'')+'</details></td><td><span class="row-state" data-danger="'+(x.status==="HOLD")+'">'+(x.status==="HOLD"?"HOLD / engineer":"Needs reply")+'</span></td><td>'+(source?'<a class="source-link" href="'+esc(source)+'" target="_blank" rel="noopener noreferrer">Source ↗</a>':"—")+'</td></tr>';
+ }).join("")+'</tbody></table></div>';
+}
+function resources(set){
+  const root=$("resources");
+  if(!set||set.root_resolution!=="VERIFIED"){
+    root.innerHTML=empty("Project Drive root is not yet verified. No guessed file link is shown.");return;
+  }
+  const items=(set.resources||[]).filter(x=>x.is_current!==false);
+  if(!items.length){root.innerHTML=empty("Project folder is verified, but no file references are currently registered.");return;}
+  const titleName=t=>({
+    PROJECT_DRIVE_FOLDER:"Project home",SOURCE_ORIGINALS_FOLDER:"Source library",
+    ARCHITECTURAL_PDF:"Architectural drawing",STRUCTURAL_PDF:"Structural drawing",
+    CAD_DWG:"CAD drawing",ETABS_MODEL:"ETABS model",SKETCHUP_MODEL:"SketchUp model",
+    GEOTECHNICAL_REPORT_PDF:"Soil investigation",MEP_SOURCE_FOLDER:"MEP library",
+    MEP_DRAWING_PDF:"MEP drawing",HISTORICAL_SOURCE_FOLDER:"Historical files",
+    STRUCTURAL_ANALYSIS_PDF:"Structural analysis report"
+  }[t]||label(t));
+  const category=x=>{
+    const n=x.display_name.toLowerCase(),t=x.resource_type;
+    if(t==="HISTORICAL_SOURCE_FOLDER")return "History";
+    if(t==="PROJECT_DRIVE_FOLDER"||t==="SOURCE_ORIGINALS_FOLDER")return "Project folders";
+    if(t==="ARCHITECTURAL_PDF"||n.includes("architecture")||n.includes("architectural"))return "Architecture";
+    if(t==="STRUCTURAL_PDF"||t==="STRUCTURAL_ANALYSIS_PDF"||n.includes("structure")||n.includes("structural"))return "Structure";
+    if(t==="ETABS_MODEL")return "Structural models";
+    if(t==="SKETCHUP_MODEL")return "3D design models";
+    if(t==="GEOTECHNICAL_REPORT_PDF")return "Soil & geotechnical";
+    if(t.startsWith("MEP")||n.includes("sanitary")||n.includes("electrical"))return "MEP";
+    return "Other documents";
+  };
+  const renderCard=x=>{
+    const pv=x.preview_mode==="DRIVE_PDF_PREVIEW"&&x.drive_file_id
+      ?"https://drive.google.com/file/d/"+encodeURIComponent(x.drive_file_id)+"/preview":null;
+    return '<article class="resource-card"><div class="resource-head"><div><div class="resource-type">'+esc(titleName(x.resource_type))+'</div><b>'+esc(x.display_name)+'</b></div><span class="pill">Drive ↗</span></div>'+
+      '<div class="resource-actions"><a href="'+esc(x.drive_url)+'" target="_blank" rel="noopener noreferrer">Open file ↗</a>'+
+      (pv?'<a href="'+esc(pv)+'" target="_blank" rel="noopener noreferrer">Preview PDF ↗</a>':"")+
+      '</div></article>';
+  };
+  const order=["Project folders","Architecture","Structure","Structural models","3D design models","Soil & geotechnical","MEP","Other documents"];
+  const groups=order.map(name=>({name,entries:items.filter(x=>category(x)===name)})).filter(g=>g.entries.length);
+  const historic=items.filter(x=>category(x)==="History");
+  const summary=set.project_id==="P007"?"Revised 2026 drawings are source references, not an independently certified construction issue. Older drawings and models are held separately.":"Source files remain in Drive; approval and execution are independent statuses.";
+  root.innerHTML='<p class="resource-intro">'+esc(summary)+'</p>'+
+    groups.map(g=>{
+      const isPrimary=["Project folders","Architecture","Structure"].includes(g.name);
+      if(isPrimary)return '<section class="resource-group"><h3>'+esc(g.name)+' <small>'+g.entries.length+'</small></h3><div class="resource-cards">'+g.entries.map(renderCard).join("")+'</div></section>';
+      return '<details class="resource-group resource-optional"><summary>'+esc(g.name)+' <small>'+g.entries.length+' file(s)</small></summary><div class="resource-cards">'+g.entries.map(renderCard).join("")+'</div></details>';
+    }).join("")+
+    (historic.length?'<details class="historical-group"><summary>Historical and received alternatives ('+historic.length+') — not approved current revisions</summary><div class="resource-cards">'+historic.map(renderCard).join("")+'</div></details>':"")+
+    '<p class="resource-note">Links are governed by Google Drive permissions. The public page contains only source pointers, not private file bytes.</p>';
+}
+async function load(){
+  try{
+    const pid=params.get("project")||"P001";
+    document.getElementById("schedule-page-link").href="schedule.html?project="+encodeURIComponent(pid);
+    document.getElementById("question-page-link").href="questions.html?project="+encodeURIComponent(pid);
+    document.getElementById("history-page-link").href="history.html?project="+encodeURIComponent(pid);
+    document.getElementById("coordination-page-link").href="coordination.html?project="+encodeURIComponent(pid);
+    const bust=Date.now();
+    const [sr,er,rr,br,tr]=await Promise.all([
+      fetch("../ops/data/current-works.json?v="+bust,{cache:"no-store"}),
+      fetch("../ops/events/daily-ops-events.jsonl?v="+bust,{cache:"no-store"}),
+      fetch("../ops/data/project-resources.json?v="+bust,{cache:"no-store"}),
+      fetch("../ops/data/field-three-day-board.json?v="+bust,{cache:"no-store"}),
+      fetch("../ops/control/field-trade-taxonomy.json?v="+bust,{cache:"no-store"})
+    ]);
+    if(!sr.ok) throw new Error("Daily Ops state unavailable.");
+    const data=await sr.json();
+    const resourceData=rr.ok?await rr.json():{projects:[]};
+    const tradeBoard=br.ok?await br.json():{projects:[]};
+    const catalog=tr.ok?await tr.json():{trades:[]};
+    const p=data.projects.find(x=>x.project_id===pid);
+    if(!p) throw new Error("Project not found.");
+    const o=p.daily_ops||{}, att=attention(p);
+    document.title=p.display_name+" — Site Evidence Snapshot";
+    $("name").textContent=p.display_name;
+    $("meta").textContent=[p.project_id,p.company_project_code,p.contractor,o.date||"No date"].filter(Boolean).join(" · ");
+    $("record-hint").textContent="📅 Source record: "+(o.date||"date unverified")+" · Field readiness must be confirmed for the work date. Never infer current site status from an older report.";
+    $("attention").textContent=att[0]; $("attention").dataset.tone=att[1];
+    $("focus").innerHTML="<b>Work briefing:</b> Dated trade reports and engineer responses are required before this can be treated as an approved daily schedule.";
+    const row=(tradeBoard.projects||[]).find(x=>x.project_id===pid);
+    if(row){row.date_yesterday=tradeBoard.date_yesterday;row.date_today=tradeBoard.date_today;row.date_tomorrow=tradeBoard.date_tomorrow;}
+    renderBoard(row,catalog);
+    resources((resourceData.projects||[]).find(x=>x.project_id===pid));
+    rows("progress",o.progress||[],"No verified progress yet.",x=>[x.status||"Progress",x.note||x.activity||"","Observed: "+(x.observed_at||"—")]);
+    renderIssues(p,catalog);
+    rows("materials",o.materials||[],"No verified material status yet.",x=>[x.material_name||x.material||"Material",[x.quantity,x.unit,x.material_state||x.status,x.note].filter(v=>v!==null&&v!==undefined&&v!=="").join(" · "),x.observed_at?"Observed: "+x.observed_at:""]);
+    rows("lookahead",o.lookahead||[],"No governed lookahead admitted yet.",x=>[x.target_date||x.day||"Next",x.activity||x.note||"",x.condition?"Condition: "+x.condition:""]);
+    const ev=o.evidence||[]; const root=$("evidence");
+    if(!ev.length){root.innerHTML=empty("No evidence references admitted yet.");}
+    else root.innerHTML='<div class="evidence">'+ev.map(x=>{const u=x.evidence_url||x.url, t=[x.evidence_type||x.provider||"Evidence",x.observed_at].filter(Boolean).join(" · ");return u?'<a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(t)+'</a>':'<div class="row">'+esc(t)+'</div>';}).join("")+'</div>';
+  }catch(e){$("name").textContent="Project operations unavailable";$("meta").textContent=e.message;["work","resources","progress","blockers","materials","lookahead","evidence"].forEach(id=>$(id).innerHTML=empty("Could not load project data."));}
+}
+load();
+})();
+</script>
+</body>
+</html>
