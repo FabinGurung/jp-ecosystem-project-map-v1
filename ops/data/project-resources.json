@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1.0",
+  "schema_version": "0.1.1",
   "authority": {
     "actual_files": "GOOGLE_DRIVE_CANONICAL_SOURCE_EVIDENCE_WAREHOUSE",
     "structured_links": "GITHUB_CANONICAL_STRUCTURED_DATA_CONTROL_WAREHOUSE",
@@ -24,6 +24,45 @@
           "access_mode": "DRIVE_PERMISSION_GATED",
           "is_current": true,
           "verified_at": "2026-10-04T15:20:00+05:45"
+        },
+        {
+          "resource_id": "RES-P001-ORIGINAL-CAD-FOLDER-20261011",
+          "resource_type": "SOURCE_ORIGINALS_FOLDER",
+          "display_name": "Bishal Paija · source CAD/DWG folder — original files",
+          "drive_file_id": "1JalzFJBfyTbF00pMnDpJP69qY1aaA-rX",
+          "drive_url": "https://drive.google.com/drive/folders/1JalzFJBfyTbF00pMnDpJP69qY1aaA-rX",
+          "mime_type": "application/vnd.google-apps.folder",
+          "preview_mode": "DRIVE_FOLDER",
+          "access_mode": "DRIVE_PERMISSION_GATED",
+          "is_current": true,
+          "version_review": "NOT_VERIFIED_AS_APPROVED_CONSTRUCTION_DRAWING",
+          "verified_at": "2026-10-11T04:20:00+05:45"
+        },
+        {
+          "resource_id": "RES-P001-ARCH-DWG-20261011",
+          "resource_type": "CAD_DWG",
+          "display_name": "Bishal (2) (4).dwg — architectural/discipline unclassified, revision not verified",
+          "drive_file_id": "16rUpvmH1JGyp_8hbU9BqispHfJNQzQh7",
+          "drive_url": "https://drive.google.com/file/d/16rUpvmH1JGyp_8hbU9BqispHfJNQzQh7/view?usp=drivesdk",
+          "mime_type": "application/dwg",
+          "preview_mode": "DRIVE_FILE_OPEN",
+          "access_mode": "DRIVE_PERMISSION_GATED",
+          "is_current": true,
+          "version_review": "REQUIRES_DISCIPLINE_AND_REVISION_CLASSIFICATION",
+          "verified_at": "2026-10-11T04:20:00+05:45"
+        },
+        {
+          "resource_id": "RES-P001-STRUCT-DWG-20261011",
+          "resource_type": "CAD_DWG",
+          "display_name": "Bishal Structure.dwg — structural source, revision not verified",
+          "drive_file_id": "1TzUCNxZ3WExD7H0mWYJ42KHsx11-A7BG",
+          "drive_url": "https://drive.google.com/file/d/1TzUCNxZ3WExD7H0mWYJ42KHsx11-A7BG/view?usp=drivesdk",
+          "mime_type": "application/dwg",
+          "preview_mode": "DRIVE_FILE_OPEN",
+          "access_mode": "DRIVE_PERMISSION_GATED",
+          "is_current": true,
+          "version_review": "NOT_VERIFIED_AS_APPROVED_CONSTRUCTION_DRAWING",
+          "verified_at": "2026-10-11T04:20:00+05:45"
         }
       ]
     },
@@ -580,5 +619,6 @@
         }
       ]
     }
-  ]
+  ],
+  "source_update_notice": "P001 source CAD/DWG links read from the linked Drive folder; presence and access verified, approved issue/revision not established; no Drive originals moved."
 }
